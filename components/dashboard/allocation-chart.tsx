@@ -50,8 +50,6 @@ export function AllocationChart({ expenses, bills, savings, debt }: AllocationCh
               data={data}
               cx="50%"
               cy="50%"
-              labelLine={false}
-              label={(entry) => `${entry.name} ${entry.percentage.toFixed(1)}%`}
               outerRadius={120}
               fill="#8884d8"
               dataKey="value"
