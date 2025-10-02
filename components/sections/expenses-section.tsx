@@ -80,7 +80,7 @@ export function ExpensesSection({ expenses, onUpdate }: ExpensesSectionProps) {
                 className="col-span-2 bg-white text-right"
                 type="number"
                 step="0.01"
-                value={item.planned}
+                value={item.planned === 0 ? '' : item.planned}
                 onChange={(e) => updateItem(item.id, 'planned', parseFloat(e.target.value) || 0)}
                 placeholder="0.00"
               />
@@ -88,7 +88,7 @@ export function ExpensesSection({ expenses, onUpdate }: ExpensesSectionProps) {
                 className="col-span-2 bg-white text-right"
                 type="number"
                 step="0.01"
-                value={item.actual}
+                value={item.actual === 0 ? '' : item.actual}
                 onChange={(e) => updateItem(item.id, 'actual', parseFloat(e.target.value) || 0)}
                 placeholder="0.00"
               />
