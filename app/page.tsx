@@ -16,7 +16,7 @@ import { ExpensesSection } from '@/components/sections/expenses-section';
 import { BillsSection } from '@/components/sections/bills-section';
 import { SavingsSection } from '@/components/sections/savings-section';
 import { DebtSection } from '@/components/sections/debt-section';
-import { DollarSign, CreditCard, PiggyBank, TrendingDown } from 'lucide-react';
+import { DollarSign, CreditCard, PiggyBank } from 'lucide-react';
 
 export default function Home() {
   const [budgetData, setBudgetData] = useState<BudgetData>(loadBudgetData());

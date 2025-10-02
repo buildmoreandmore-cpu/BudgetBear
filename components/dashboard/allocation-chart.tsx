@@ -23,7 +23,7 @@ export function AllocationChart({ expenses, bills, savings, debt }: AllocationCh
 
   const COLORS = ['#f9a8d4', '#ddd6fe', '#bfdbfe', '#a7a5b9'];
 
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ name: string; value: number; payload: { percentage: number } }> }) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-background border rounded-lg p-3 shadow-lg">
