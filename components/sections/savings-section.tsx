@@ -81,6 +81,7 @@ export function SavingsSection({ savings, onUpdate }: SavingsSectionProps) {
                 step="0.01"
                 value={item.planned === 0 ? '' : item.planned}
                 onChange={(e) => updateItem(item.id, 'planned', parseFloat(e.target.value) || 0)}
+                onFocus={(e) => e.target.select()}
                 placeholder="0.00"
               />
               <Input
@@ -89,6 +90,7 @@ export function SavingsSection({ savings, onUpdate }: SavingsSectionProps) {
                 step="0.01"
                 value={item.actual === 0 ? '' : item.actual}
                 onChange={(e) => updateItem(item.id, 'actual', parseFloat(e.target.value) || 0)}
+                onFocus={(e) => e.target.select()}
                 placeholder="0.00"
               />
               <div className="col-span-3 flex items-center gap-2">

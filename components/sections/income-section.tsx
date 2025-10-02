@@ -71,6 +71,7 @@ export function IncomeSection({ income, onUpdate }: IncomeSectionProps) {
                 step="0.01"
                 value={item.planned === 0 ? '' : item.planned}
                 onChange={(e) => updateItem(item.id, 'planned', parseFloat(e.target.value) || 0)}
+                onFocus={(e) => e.target.select()}
                 placeholder="0.00"
               />
               <Input
@@ -79,6 +80,7 @@ export function IncomeSection({ income, onUpdate }: IncomeSectionProps) {
                 step="0.01"
                 value={item.actual === 0 ? '' : item.actual}
                 onChange={(e) => updateItem(item.id, 'actual', parseFloat(e.target.value) || 0)}
+                onFocus={(e) => e.target.select()}
                 placeholder="0.00"
               />
               <Button
