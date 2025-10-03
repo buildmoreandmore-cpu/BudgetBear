@@ -137,7 +137,7 @@ export default function Home() {
         {/* Header */}
         <div className="text-center mb-6">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <span className="text-5xl">🐻</span>
+            <span className="text-5xl">🧸</span>
             <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
               BudgetBear
             </h1>
@@ -334,7 +334,7 @@ export default function Home() {
           {/* Community Tab */}
           <TabsContent value="community" className="space-y-6">
             <div className="text-center py-16">
-              <h2 className="text-3xl font-bold mb-4">Community Features Coming Soon! 🐻</h2>
+              <h2 className="text-3xl font-bold mb-4">Community Features Coming Soon! 🧸</h2>
               <p className="text-muted-foreground mb-8">
                 Share budgets with family, connect with accountability partners, and join the BudgetBear community.
               </p>
