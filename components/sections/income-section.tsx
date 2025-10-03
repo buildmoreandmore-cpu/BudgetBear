@@ -58,29 +58,50 @@ export function IncomeSection({ income, onUpdate }: IncomeSectionProps) {
           </div>
 
           {income.map((item) => (
-            <div key={item.id} className="grid grid-cols-12 gap-4 items-center">
+            <div key={item.id} className="grid grid-cols-12 gap-3 items-center">
               <Input
-                className="col-span-5 bg-white"
+                className="col-span-5 bg-white border-2 rounded-md shadow-sm"
                 value={item.name}
                 onChange={(e) => updateItem(item.id, 'name', e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const nextInput = e.currentTarget.parentElement?.querySelector('input[type="number"]') as HTMLInputElement;
+                    nextInput?.focus();
+                  }
+                }}
                 placeholder="Income source"
               />
               <Input
-                className="col-span-3 bg-white text-right"
+                className="col-span-3 bg-white text-right border-2 rounded-md shadow-sm"
                 type="number"
                 step="0.01"
                 value={item.planned === 0 ? '' : item.planned}
                 onChange={(e) => updateItem(item.id, 'planned', parseFloat(e.target.value) || 0)}
                 onFocus={(e) => e.target.select()}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const inputs = Array.from(e.currentTarget.parentElement?.querySelectorAll('input') || []);
+                    const currentIndex = inputs.indexOf(e.currentTarget as HTMLInputElement);
+                    const nextInput = inputs[currentIndex + 1] as HTMLInputElement;
+                    nextInput?.focus();
+                  }
+                }}
                 placeholder="0.00"
               />
               <Input
-                className="col-span-3 bg-white text-right"
+                className="col-span-3 bg-white text-right border-2 rounded-md shadow-sm"
                 type="number"
                 step="0.01"
                 value={item.actual === 0 ? '' : item.actual}
                 onChange={(e) => updateItem(item.id, 'actual', parseFloat(e.target.value) || 0)}
                 onFocus={(e) => e.target.select()}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                  }
+                }}
                 placeholder="0.00"
               />
               <Button

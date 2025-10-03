@@ -95,6 +95,13 @@ export function DebtSection({ debt, onUpdate }: DebtSectionProps) {
                 className="col-span-4 bg-white"
                 value={item.name}
                 onChange={(e) => updateItem(item.id, 'name', e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const nextInput = e.currentTarget.parentElement?.querySelector('input[type="number"]') as HTMLInputElement;
+                    nextInput?.focus();
+                  }
+                }}
                 placeholder="Debt name"
               />
               <Input
@@ -104,6 +111,15 @@ export function DebtSection({ debt, onUpdate }: DebtSectionProps) {
                 value={item.planned === 0 ? '' : item.planned}
                 onChange={(e) => updateItem(item.id, 'planned', parseFloat(e.target.value) || 0)}
                 onFocus={(e) => e.target.select()}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const inputs = Array.from(e.currentTarget.parentElement?.querySelectorAll('input') || []);
+                    const currentIndex = inputs.indexOf(e.currentTarget as HTMLInputElement);
+                    const nextInput = inputs[currentIndex + 1] as HTMLInputElement;
+                    nextInput?.focus();
+                  }
+                }}
                 placeholder="0.00"
               />
               <Input
@@ -113,6 +129,11 @@ export function DebtSection({ debt, onUpdate }: DebtSectionProps) {
                 value={item.actual === 0 ? '' : item.actual}
                 onChange={(e) => updateItem(item.id, 'actual', parseFloat(e.target.value) || 0)}
                 onFocus={(e) => e.target.select()}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                  }
+                }}
                 placeholder="0.00"
               />
               <div className="col-span-2 flex items-center gap-2">
