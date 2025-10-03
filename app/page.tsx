@@ -133,62 +133,69 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-6 max-w-7xl">
         {/* Header */}
-        <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
-          <div className="flex items-center gap-3">
+        <div className="text-center mb-6">
+          <div className="flex items-center justify-center gap-2 mb-4">
             <span className="text-5xl">🐻</span>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
               BudgetBear
             </h1>
           </div>
 
-          <div className="flex gap-3 items-center flex-wrap justify-center">
+          {/* Month/Year Selectors */}
+          <div className="flex justify-center gap-2 mb-4">
             <MonthSelector
               selectedMonth={selectedMonth}
               selectedYear={selectedYear}
               onMonthChange={setSelectedMonth}
               onYearChange={setSelectedYear}
             />
-            <div className="flex gap-2 flex-wrap">
-              <Button onClick={() => exportToExcel(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm">
-                <FileSpreadsheet className="h-4 w-4 mr-2" />
-                Excel
-              </Button>
-              <Button onClick={() => exportToPDF(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm">
-                <FileText className="h-4 w-4 mr-2" />
-                PDF
-              </Button>
-              <Button onClick={() => exportToDoc(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm">
-                <FileText className="h-4 w-4 mr-2" />
-                Doc
-              </Button>
-              <Button onClick={handleExport} variant="outline" size="sm">
-                <Download className="h-4 w-4 mr-2" />
-                JSON
-              </Button>
-              <Button onClick={handleImport} variant="outline" size="sm">
-                <Upload className="h-4 w-4 mr-2" />
-                Import
-              </Button>
-              <Button onClick={handleReset} variant="outline" size="sm">
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Reset
-              </Button>
-            </div>
+          </div>
+
+          {/* Export Buttons Row */}
+          <div className="flex flex-wrap justify-center gap-2 mb-4">
+            <Button onClick={() => exportToExcel(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm" className="bg-white">
+              <FileSpreadsheet className="h-4 w-4 mr-1" />
+              Excel
+            </Button>
+            <Button onClick={() => exportToPDF(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm" className="bg-white">
+              <FileText className="h-4 w-4 mr-1" />
+              PDF
+            </Button>
+            <Button onClick={() => exportToDoc(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm" className="bg-white">
+              <FileText className="h-4 w-4 mr-1" />
+              Doc
+            </Button>
+            <Button onClick={handleExport} variant="outline" size="sm" className="bg-white">
+              <Download className="h-4 w-4 mr-1" />
+              JSON
+            </Button>
+          </div>
+
+          {/* Import/Reset Row */}
+          <div className="flex justify-center gap-2">
+            <Button onClick={handleImport} variant="outline" size="sm" className="bg-white">
+              <Upload className="h-4 w-4 mr-1" />
+              Import
+            </Button>
+            <Button onClick={handleReset} variant="outline" size="sm" className="bg-white">
+              <RefreshCw className="h-4 w-4 mr-1" />
+              Reset
+            </Button>
           </div>
         </div>
 
-        <Tabs defaultValue="dashboard" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-8 bg-white/70 backdrop-blur">
-            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-            <TabsTrigger value="income">Income</TabsTrigger>
-            <TabsTrigger value="expenses">Expenses</TabsTrigger>
-            <TabsTrigger value="bills">Bills</TabsTrigger>
-            <TabsTrigger value="savings">Savings</TabsTrigger>
-            <TabsTrigger value="debt">Debt</TabsTrigger>
-            <TabsTrigger value="insights">Insights</TabsTrigger>
-            <TabsTrigger value="community">Community</TabsTrigger>
+        <Tabs defaultValue="dashboard" className="space-y-4">
+          <TabsList className="grid w-full grid-cols-2 gap-2 bg-transparent p-0 h-auto">
+            <TabsTrigger value="dashboard" className="bg-white rounded-xl py-3 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Dashboard</TabsTrigger>
+            <TabsTrigger value="income" className="bg-white rounded-xl py-3 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Income</TabsTrigger>
+            <TabsTrigger value="expenses" className="bg-white rounded-xl py-3 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Expenses</TabsTrigger>
+            <TabsTrigger value="bills" className="bg-white rounded-xl py-3 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Bills</TabsTrigger>
+            <TabsTrigger value="savings" className="bg-white rounded-xl py-3 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Savings</TabsTrigger>
+            <TabsTrigger value="debt" className="bg-white rounded-xl py-3 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Debt</TabsTrigger>
+            <TabsTrigger value="insights" className="bg-white rounded-xl py-3 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Insights</TabsTrigger>
+            <TabsTrigger value="community" className="bg-white rounded-xl py-3 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Community</TabsTrigger>
           </TabsList>
 
           {/* Dashboard Tab */}

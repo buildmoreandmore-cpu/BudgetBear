@@ -69,26 +69,26 @@ export function InsightsPanel({ budgetData, month, year }: InsightsPanelProps) {
   };
 
   return (
-    <Card className="bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 border-2 border-purple-200">
-      <CardHeader>
-        <div className="flex items-center justify-between">
+    <Card className="bg-white border-2 border-purple-200 rounded-2xl shadow-lg">
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-purple-600" />
-            <CardTitle className="text-xl">🐻 Bear&apos;s AI Insights</CardTitle>
+            <CardTitle className="text-lg">🐻 Bear&apos;s AI Insights</CardTitle>
           </div>
           <Button
             onClick={generateInsights}
             disabled={loading}
             size="sm"
             variant="outline"
-            className="bg-white"
+            className="bg-purple-50 border-purple-300 hover:bg-purple-100"
           >
             <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
             {loading ? 'Analyzing...' : 'Get Insights'}
           </Button>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-0">
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-md p-4 text-red-800">
             {error}
@@ -96,24 +96,24 @@ export function InsightsPanel({ budgetData, month, year }: InsightsPanelProps) {
         )}
 
         {insights.length === 0 && !error && !loading && (
-          <div className="text-center py-8 text-muted-foreground">
-            <Sparkles className="h-12 w-12 mx-auto mb-4 text-purple-300" />
-            <p>Click &quot;Get Insights&quot; to receive personalized financial advice from BudgetBear!</p>
+          <div className="text-center py-12 px-4 text-muted-foreground bg-purple-50 rounded-xl">
+            <Sparkles className="h-16 w-16 mx-auto mb-4 text-purple-300" />
+            <p className="text-sm">Click &quot;Get Insights&quot; to receive personalized financial advice from BudgetBear!</p>
           </div>
         )}
 
         {insights.length > 0 && (
-          <div className="space-y-3">
+          <div className="space-y-2">
             {insights.map((insight, index) => (
               <div
                 key={index}
-                className={`p-4 rounded-lg border-2 ${getTypeColor(insight.type)}`}
+                className={`p-3 rounded-xl border-2 ${getTypeColor(insight.type)}`}
               >
-                <div className="flex items-start gap-3">
-                  <span className="text-2xl">{insight.icon}</span>
-                  <div className="flex-1">
-                    <h4 className="font-semibold mb-1">{insight.title}</h4>
-                    <p className="text-sm">{insight.message}</p>
+                <div className="flex items-start gap-2">
+                  <span className="text-xl flex-shrink-0">{insight.icon}</span>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-semibold mb-0.5 text-sm">{insight.title}</h4>
+                    <p className="text-xs leading-relaxed">{insight.message}</p>
                   </div>
                 </div>
               </div>
