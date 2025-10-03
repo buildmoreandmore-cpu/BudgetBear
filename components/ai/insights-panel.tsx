@@ -72,16 +72,16 @@ export function InsightsPanel({ budgetData, month, year }: InsightsPanelProps) {
     <Card className="bg-white border-2 border-purple-200 rounded-2xl shadow-lg">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between flex-wrap gap-2">
-          <div className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-purple-600" />
-            <CardTitle className="text-lg">🧸 Bear&apos;s AI Insights</CardTitle>
+          <div className="flex items-center gap-2 min-w-0">
+            <Sparkles className="h-4 w-4 md:h-5 md:w-5 text-purple-600 flex-shrink-0" />
+            <CardTitle className="text-base md:text-lg truncate">🧸 Bear&apos;s AI Insights</CardTitle>
           </div>
           <Button
             onClick={generateInsights}
             disabled={loading}
             size="sm"
             variant="outline"
-            className="bg-purple-50 border-purple-300 hover:bg-purple-100"
+            className="bg-purple-50 border-purple-300 hover:bg-purple-100 flex-shrink-0"
           >
             <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
             {loading ? 'Analyzing...' : 'Get Insights'}
