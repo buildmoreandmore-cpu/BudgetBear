@@ -59,7 +59,7 @@ Focus on:
 Be encouraging and specific. Keep it concise and friendly.`;
 
     const message = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
+      model: 'claude-3-5-sonnet-20250219',
       max_tokens: 1024,
       messages: [
         {
