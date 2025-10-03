@@ -130,15 +130,15 @@ export function BillsSection({ bills, onUpdate }: BillsSectionProps) {
             </div>
           ))}
 
-          <div className="flex gap-2">
+          <div className="grid grid-cols-12 gap-4">
             <Input
               placeholder="Add new bill"
               value={newItemName}
               onChange={(e) => setNewItemName(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && addItem()}
-              className="bg-white"
+              className="col-span-11 bg-white"
             />
-            <Button onClick={addItem} size="icon">
+            <Button onClick={addItem} size="icon" className="col-span-1">
               <Plus className="h-4 w-4" />
             </Button>
           </div>

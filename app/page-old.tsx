@@ -3,11 +3,10 @@
 import { useEffect, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Download, Upload, RefreshCw, FileSpreadsheet, FileText } from 'lucide-react';
-import { BudgetData, MonthlyBudget } from '@/types/budget';
+import { Download, Upload, RefreshCw, Wallet } from 'lucide-react';
+import { BudgetData } from '@/types/budget';
 import { loadBudgetData, saveBudgetData, resetBudgetData, exportBudgetData, importBudgetData } from '@/lib/storage';
 import { calculateBudgetSummary } from '@/lib/calculations';
-import { exportToExcel, exportToPDF, exportToDoc } from '@/lib/export';
 import { SummaryCard } from '@/components/dashboard/summary-card';
 import { AmountLeftCard } from '@/components/dashboard/amount-left-card';
 import { AllocationChart } from '@/components/dashboard/allocation-chart';
@@ -17,17 +16,11 @@ import { ExpensesSection } from '@/components/sections/expenses-section';
 import { BillsSection } from '@/components/sections/bills-section';
 import { SavingsSection } from '@/components/sections/savings-section';
 import { DebtSection } from '@/components/sections/debt-section';
-import { MonthSelector } from '@/components/month-selector';
 import { DollarSign, CreditCard, PiggyBank } from 'lucide-react';
 
 export default function Home() {
   const [budgetData, setBudgetData] = useState<BudgetData>(loadBudgetData());
   const [mounted, setMounted] = useState(false);
-
-  const currentDate = new Date();
-  const currentMonthName = currentDate.toLocaleString('en-US', { month: 'long' }).toLowerCase();
-  const [selectedMonth, setSelectedMonth] = useState(currentMonthName);
-  const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear());
 
   useEffect(() => {
     setMounted(true);
@@ -39,46 +32,7 @@ export default function Home() {
     }
   }, [budgetData, mounted]);
 
-  // Ensure the selected year exists
-  if (!budgetData.years[selectedYear]) {
-    budgetData.years[selectedYear] = {
-      january: { income: [], expenses: [], bills: [], savings: [], debt: [] },
-      february: { income: [], expenses: [], bills: [], savings: [], debt: [] },
-      march: { income: [], expenses: [], bills: [], savings: [], debt: [] },
-      april: { income: [], expenses: [], bills: [], savings: [], debt: [] },
-      may: { income: [], expenses: [], bills: [], savings: [], debt: [] },
-      june: { income: [], expenses: [], bills: [], savings: [], debt: [] },
-      july: { income: [], expenses: [], bills: [], savings: [], debt: [] },
-      august: { income: [], expenses: [], bills: [], savings: [], debt: [] },
-      september: { income: [], expenses: [], bills: [], savings: [], debt: [] },
-      october: { income: [], expenses: [], bills: [], savings: [], debt: [] },
-      november: { income: [], expenses: [], bills: [], savings: [], debt: [] },
-      december: { income: [], expenses: [], bills: [], savings: [], debt: [] },
-    };
-  }
-
-  const currentMonthData: MonthlyBudget = budgetData.years[selectedYear]?.[selectedMonth] || {
-    income: [],
-    expenses: [],
-    bills: [],
-    savings: [],
-    debt: [],
-  };
-
-  const summary = calculateBudgetSummary(currentMonthData);
-
-  const updateMonthData = (monthData: MonthlyBudget) => {
-    setBudgetData({
-      ...budgetData,
-      years: {
-        ...budgetData.years,
-        [selectedYear]: {
-          ...budgetData.years[selectedYear],
-          [selectedMonth]: monthData,
-        },
-      },
-    });
-  };
+  const summary = calculateBudgetSummary(budgetData);
 
   const handleExport = () => {
     const data = exportBudgetData();
@@ -86,7 +40,7 @@ export default function Home() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `budgetbear-${selectedYear}-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `budget-tracker-${new Date().toISOString().split('T')[0]}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -125,10 +79,10 @@ export default function Home() {
     return null;
   }
 
-  const totalExpensesPlanned = currentMonthData.expenses.reduce((sum, item) => sum + item.planned, 0);
-  const totalBillsPlanned = currentMonthData.bills.reduce((sum, item) => sum + item.planned, 0);
-  const totalSavingsPlanned = currentMonthData.savings.reduce((sum, item) => sum + item.planned, 0);
-  const totalDebtPlanned = currentMonthData.debt.reduce((sum, item) => sum + item.planned, 0);
+  const totalExpensesPlanned = budgetData.expenses.reduce((sum, item) => sum + item.planned, 0);
+  const totalBillsPlanned = budgetData.bills.reduce((sum, item) => sum + item.planned, 0);
+  const totalSavingsPlanned = budgetData.savings.reduce((sum, item) => sum + item.planned, 0);
+  const totalDebtPlanned = budgetData.debt.reduce((sum, item) => sum + item.planned, 0);
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
@@ -136,45 +90,24 @@ export default function Home() {
         {/* Header */}
         <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
           <div className="flex items-center gap-3">
-            <span className="text-5xl">🐻</span>
+            <Wallet className="h-10 w-10 text-purple-600" />
             <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              BudgetBear
+              Budget Tracker
             </h1>
           </div>
-
-          <div className="flex gap-3 items-center flex-wrap justify-center">
-            <MonthSelector
-              selectedMonth={selectedMonth}
-              selectedYear={selectedYear}
-              onMonthChange={setSelectedMonth}
-              onYearChange={setSelectedYear}
-            />
-            <div className="flex gap-2 flex-wrap">
-              <Button onClick={() => exportToExcel(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm">
-                <FileSpreadsheet className="h-4 w-4 mr-2" />
-                Excel
-              </Button>
-              <Button onClick={() => exportToPDF(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm">
-                <FileText className="h-4 w-4 mr-2" />
-                PDF
-              </Button>
-              <Button onClick={() => exportToDoc(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm">
-                <FileText className="h-4 w-4 mr-2" />
-                Doc
-              </Button>
-              <Button onClick={handleExport} variant="outline" size="sm">
-                <Download className="h-4 w-4 mr-2" />
-                JSON
-              </Button>
-              <Button onClick={handleImport} variant="outline" size="sm">
-                <Upload className="h-4 w-4 mr-2" />
-                Import
-              </Button>
-              <Button onClick={handleReset} variant="outline" size="sm">
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Reset
-              </Button>
-            </div>
+          <div className="flex gap-2">
+            <Button onClick={handleExport} variant="outline" size="sm">
+              <Download className="h-4 w-4 mr-2" />
+              Export
+            </Button>
+            <Button onClick={handleImport} variant="outline" size="sm">
+              <Upload className="h-4 w-4 mr-2" />
+              Import
+            </Button>
+            <Button onClick={handleReset} variant="outline" size="sm">
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Reset
+            </Button>
           </div>
         </div>
 
@@ -248,40 +181,40 @@ export default function Home() {
           {/* Income Tab */}
           <TabsContent value="income">
             <IncomeSection
-              income={currentMonthData.income}
-              onUpdate={(income) => updateMonthData({ ...currentMonthData, income })}
+              income={budgetData.income}
+              onUpdate={(income) => setBudgetData({ ...budgetData, income })}
             />
           </TabsContent>
 
           {/* Expenses Tab */}
           <TabsContent value="expenses">
             <ExpensesSection
-              expenses={currentMonthData.expenses}
-              onUpdate={(expenses) => updateMonthData({ ...currentMonthData, expenses })}
+              expenses={budgetData.expenses}
+              onUpdate={(expenses) => setBudgetData({ ...budgetData, expenses })}
             />
           </TabsContent>
 
           {/* Bills Tab */}
           <TabsContent value="bills">
             <BillsSection
-              bills={currentMonthData.bills}
-              onUpdate={(bills) => updateMonthData({ ...currentMonthData, bills })}
+              bills={budgetData.bills}
+              onUpdate={(bills) => setBudgetData({ ...budgetData, bills })}
             />
           </TabsContent>
 
           {/* Savings Tab */}
           <TabsContent value="savings">
             <SavingsSection
-              savings={currentMonthData.savings}
-              onUpdate={(savings) => updateMonthData({ ...currentMonthData, savings })}
+              savings={budgetData.savings}
+              onUpdate={(savings) => setBudgetData({ ...budgetData, savings })}
             />
           </TabsContent>
 
           {/* Debt Tab */}
           <TabsContent value="debt">
             <DebtSection
-              debt={currentMonthData.debt}
-              onUpdate={(debt) => updateMonthData({ ...currentMonthData, debt })}
+              debt={budgetData.debt}
+              onUpdate={(debt) => setBudgetData({ ...budgetData, debt })}
             />
           </TabsContent>
         </Tabs>

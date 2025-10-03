@@ -1,11 +1,11 @@
-import { BudgetData, BudgetSummary } from '@/types/budget';
+import { MonthlyBudget, BudgetSummary } from '@/types/budget';
 
-export const calculateBudgetSummary = (data: BudgetData): BudgetSummary => {
-  const totalIncome = data.income.reduce((sum, item) => sum + item.actual, 0);
-  const totalExpenses = data.expenses.reduce((sum, item) => sum + item.actual, 0);
-  const totalBills = data.bills.reduce((sum, item) => sum + item.actual, 0);
-  const totalSavings = data.savings.reduce((sum, item) => sum + item.actual, 0);
-  const totalDebt = data.debt.reduce((sum, item) => sum + item.actual, 0);
+export const calculateBudgetSummary = (monthData: MonthlyBudget): BudgetSummary => {
+  const totalIncome = monthData.income.reduce((sum, item) => sum + item.actual, 0);
+  const totalExpenses = monthData.expenses.reduce((sum, item) => sum + item.actual, 0);
+  const totalBills = monthData.bills.reduce((sum, item) => sum + item.actual, 0);
+  const totalSavings = monthData.savings.reduce((sum, item) => sum + item.actual, 0);
+  const totalDebt = monthData.debt.reduce((sum, item) => sum + item.actual, 0);
 
   const totalSpent = totalExpenses + totalBills + totalSavings + totalDebt;
   const amountLeftToSpend = totalIncome - totalSpent;

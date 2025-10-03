@@ -41,12 +41,20 @@ export interface DebtItem {
   completed: boolean;
 }
 
-export interface BudgetData {
+export interface MonthlyBudget {
   income: IncomeItem[];
   expenses: ExpenseItem[];
   bills: BillItem[];
   savings: SavingsItem[];
   debt: DebtItem[];
+}
+
+export interface BudgetData {
+  years: {
+    [year: number]: {
+      [month: string]: MonthlyBudget; // Keys: 'january', 'february', etc.
+    };
+  };
 }
 
 export interface BudgetSummary {
