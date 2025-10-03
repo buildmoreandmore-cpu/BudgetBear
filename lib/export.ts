@@ -103,6 +103,7 @@ export const exportToPDF = (monthData: MonthlyBudget, month: string, year: numbe
     headStyles: { fillColor: [147, 51, 234] },
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   yPos = (doc as any).lastAutoTable.finalY + 10;
 
   // Expenses Table
@@ -124,6 +125,7 @@ export const exportToPDF = (monthData: MonthlyBudget, month: string, year: numbe
     headStyles: { fillColor: [236, 72, 153] },
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   yPos = (doc as any).lastAutoTable.finalY + 10;
 
   // Bills Table
@@ -150,6 +152,7 @@ export const exportToPDF = (monthData: MonthlyBudget, month: string, year: numbe
     headStyles: { fillColor: [59, 130, 246] },
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   yPos = (doc as any).lastAutoTable.finalY + 10;
 
   // Savings Table
@@ -176,6 +179,7 @@ export const exportToPDF = (monthData: MonthlyBudget, month: string, year: numbe
     headStyles: { fillColor: [168, 85, 247] },
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   yPos = (doc as any).lastAutoTable.finalY + 10;
 
   // Debt Table
@@ -208,7 +212,7 @@ export const exportToPDF = (monthData: MonthlyBudget, month: string, year: numbe
 
 export const exportToDoc = (monthData: MonthlyBudget, month: string, year: number) => {
   // Create HTML content that can be opened as a Word document
-  let html = `
+  const html = `
     <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word'>
     <head><meta charset='utf-8'><title>BudgetBear - ${month} ${year}</title></head>
     <body>
