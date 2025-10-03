@@ -18,6 +18,7 @@ import { BillsSection } from '@/components/sections/bills-section';
 import { SavingsSection } from '@/components/sections/savings-section';
 import { DebtSection } from '@/components/sections/debt-section';
 import { MonthSelector } from '@/components/month-selector';
+import { InsightsPanel } from '@/components/ai/insights-panel';
 import { DollarSign, CreditCard, PiggyBank } from 'lucide-react';
 
 export default function Home() {
@@ -179,17 +180,26 @@ export default function Home() {
         </div>
 
         <Tabs defaultValue="dashboard" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-6 bg-white/70 backdrop-blur">
+          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-8 bg-white/70 backdrop-blur">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="income">Income</TabsTrigger>
             <TabsTrigger value="expenses">Expenses</TabsTrigger>
             <TabsTrigger value="bills">Bills</TabsTrigger>
             <TabsTrigger value="savings">Savings</TabsTrigger>
             <TabsTrigger value="debt">Debt</TabsTrigger>
+            <TabsTrigger value="insights">Insights</TabsTrigger>
+            <TabsTrigger value="community">Community</TabsTrigger>
           </TabsList>
 
           {/* Dashboard Tab */}
           <TabsContent value="dashboard" className="space-y-6">
+            {/* AI Insights Panel */}
+            <InsightsPanel
+              budgetData={currentMonthData}
+              month={selectedMonth}
+              year={selectedYear}
+            />
+
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <SummaryCard
@@ -283,6 +293,68 @@ export default function Home() {
               debt={currentMonthData.debt}
               onUpdate={(debt) => updateMonthData({ ...currentMonthData, debt })}
             />
+          </TabsContent>
+
+          {/* Insights Tab */}
+          <TabsContent value="insights" className="space-y-6">
+            <InsightsPanel
+              budgetData={currentMonthData}
+              month={selectedMonth}
+              year={selectedYear}
+            />
+
+            {/* Future: Add spending trends, predictions, and detailed analytics here */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <CashFlowChart
+                expensesPlanned={totalExpensesPlanned}
+                expensesActual={summary.totalExpenses}
+                billsPlanned={totalBillsPlanned}
+                billsActual={summary.totalBills}
+                savingsPlanned={totalSavingsPlanned}
+                savingsActual={summary.totalSavings}
+                debtPlanned={totalDebtPlanned}
+                debtActual={summary.totalDebt}
+              />
+              <AllocationChart
+                expenses={summary.totalExpenses}
+                bills={summary.totalBills}
+                savings={summary.totalSavings}
+                debt={summary.totalDebt}
+              />
+            </div>
+          </TabsContent>
+
+          {/* Community Tab */}
+          <TabsContent value="community" className="space-y-6">
+            <div className="text-center py-16">
+              <h2 className="text-3xl font-bold mb-4">Community Features Coming Soon! 🐻</h2>
+              <p className="text-muted-foreground mb-8">
+                Share budgets with family, connect with accountability partners, and join the BudgetBear community.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                <div className="bg-white p-6 rounded-lg shadow-md">
+                  <div className="text-4xl mb-3">👥</div>
+                  <h3 className="font-semibold mb-2">Family Budgets</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Share and collaborate on budgets with family members
+                  </p>
+                </div>
+                <div className="bg-white p-6 rounded-lg shadow-md">
+                  <div className="text-4xl mb-3">🤝</div>
+                  <h3 className="font-semibold mb-2">Accountability Partners</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Connect with friends for financial motivation and support
+                  </p>
+                </div>
+                <div className="bg-white p-6 rounded-lg shadow-md">
+                  <div className="text-4xl mb-3">🏆</div>
+                  <h3 className="font-semibold mb-2">Community Challenges</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Join savings challenges and compete with other users
+                  </p>
+                </div>
+              </div>
+            </div>
           </TabsContent>
         </Tabs>
       </div>
