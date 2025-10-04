@@ -209,8 +209,8 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <Tabs defaultValue="dashboard" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-2 gap-2 bg-transparent p-0 h-auto">
+        <Tabs defaultValue="dashboard" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-2 gap-2 bg-transparent p-0 h-auto mb-6">
             <TabsTrigger value="dashboard" className="bg-white rounded-xl py-3 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Dashboard</TabsTrigger>
             <TabsTrigger value="income" className="bg-white rounded-xl py-3 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Income</TabsTrigger>
             <TabsTrigger value="expenses" className="bg-white rounded-xl py-3 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Expenses</TabsTrigger>
@@ -222,7 +222,7 @@ export default function Dashboard() {
           </TabsList>
 
           {/* Dashboard Tab */}
-          <TabsContent value="dashboard" className="space-y-6">
+          <TabsContent value="dashboard" className="space-y-6 mt-0">
             {/* AI Insights Panel */}
             <InsightsPanel
               budgetData={currentMonthData}
@@ -286,7 +286,7 @@ export default function Dashboard() {
           </TabsContent>
 
           {/* Income Tab */}
-          <TabsContent value="income">
+          <TabsContent value="income" className="mt-0">
             <IncomeSection
               income={currentMonthData.income}
               onUpdate={(income) => updateMonthData({ ...currentMonthData, income })}
@@ -294,7 +294,7 @@ export default function Dashboard() {
           </TabsContent>
 
           {/* Expenses Tab */}
-          <TabsContent value="expenses">
+          <TabsContent value="expenses" className="mt-0">
             <ExpensesSection
               expenses={currentMonthData.expenses}
               onUpdate={(expenses) => updateMonthData({ ...currentMonthData, expenses })}
@@ -302,7 +302,7 @@ export default function Dashboard() {
           </TabsContent>
 
           {/* Bills Tab */}
-          <TabsContent value="bills">
+          <TabsContent value="bills" className="mt-0">
             <BillsSection
               bills={currentMonthData.bills}
               onUpdate={(bills) => updateMonthData({ ...currentMonthData, bills })}
@@ -310,7 +310,7 @@ export default function Dashboard() {
           </TabsContent>
 
           {/* Savings Tab */}
-          <TabsContent value="savings">
+          <TabsContent value="savings" className="mt-0">
             <SavingsSection
               savings={currentMonthData.savings}
               onUpdate={(savings) => updateMonthData({ ...currentMonthData, savings })}
@@ -318,7 +318,7 @@ export default function Dashboard() {
           </TabsContent>
 
           {/* Debt Tab */}
-          <TabsContent value="debt">
+          <TabsContent value="debt" className="mt-0">
             <DebtSection
               debt={currentMonthData.debt}
               onUpdate={(debt) => updateMonthData({ ...currentMonthData, debt })}
@@ -326,7 +326,7 @@ export default function Dashboard() {
           </TabsContent>
 
           {/* Insights Tab */}
-          <TabsContent value="insights" className="space-y-6">
+          <TabsContent value="insights" className="space-y-6 mt-0">
             <InsightsPanel
               budgetData={currentMonthData}
               month={selectedMonth}
@@ -355,7 +355,7 @@ export default function Dashboard() {
           </TabsContent>
 
           {/* Community Tab */}
-          <TabsContent value="community" className="space-y-6">
+          <TabsContent value="community" className="space-y-6 mt-0">
             <div className="text-center py-16">
               <h2 className="text-3xl font-bold mb-4">Community Features Coming Soon! 🧸</h2>
               <p className="text-muted-foreground mb-8">
