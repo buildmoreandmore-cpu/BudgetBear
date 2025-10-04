@@ -153,72 +153,65 @@ export default function Dashboard() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
       <div className="container mx-auto px-4 py-6 max-w-7xl">
-        {/* Header */}
-        <div className="text-center mb-6">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <span className="text-4xl md:text-5xl">🧸</span>
-            <h1 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              BudgetBear
-            </h1>
-          </div>
+        {/* Header - Horizontal Layout */}
+        <div className="mb-6">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-4 mb-6">
+            {/* Logo */}
+            <div className="flex items-center gap-2">
+              <span className="text-4xl">🧸</span>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                BudgetBear
+              </h1>
+            </div>
 
-          {/* Month/Year Selectors */}
-          <div className="flex justify-center gap-2 mb-4">
-            <MonthSelector
-              selectedMonth={selectedMonth}
-              selectedYear={selectedYear}
-              onMonthChange={setSelectedMonth}
-              onYearChange={setSelectedYear}
-            />
-          </div>
+            {/* Month/Year Selectors */}
+            <div className="flex gap-2">
+              <MonthSelector
+                selectedMonth={selectedMonth}
+                selectedYear={selectedYear}
+                onMonthChange={setSelectedMonth}
+                onYearChange={setSelectedYear}
+              />
+            </div>
 
-          {/* Export Buttons Row */}
-          <div className="flex flex-wrap justify-center gap-2 mb-4">
-            <Button onClick={() => exportToExcel(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm" className="bg-white">
-              <FileSpreadsheet className="h-4 w-4 mr-1" />
-              Excel
-            </Button>
-            <Button onClick={() => exportToPDF(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm" className="bg-white">
-              <FileText className="h-4 w-4 mr-1" />
-              PDF
-            </Button>
-            <Button onClick={() => exportToDoc(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm" className="bg-white">
-              <FileText className="h-4 w-4 mr-1" />
-              Doc
-            </Button>
-            <Button onClick={handleExport} variant="outline" size="sm" className="bg-white">
-              <Download className="h-4 w-4 mr-1" />
-              JSON
-            </Button>
-          </div>
-
-          {/* Import/Reset/Sign Out Row */}
-          <div className="flex justify-center gap-2">
-            <Button onClick={handleImport} variant="outline" size="sm" className="bg-white">
-              <Upload className="h-4 w-4 mr-1" />
-              Import
-            </Button>
-            <Button onClick={handleReset} variant="outline" size="sm" className="bg-white">
-              <RefreshCw className="h-4 w-4 mr-1" />
-              Reset
-            </Button>
-            <Button onClick={handleSignOut} variant="outline" size="sm" className="bg-white">
-              <LogOut className="h-4 w-4 mr-1" />
-              Sign Out
-            </Button>
+            {/* Action Buttons */}
+            <div className="flex flex-wrap justify-center gap-2">
+              <Button onClick={() => exportToExcel(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm" className="bg-white">
+                <FileSpreadsheet className="h-4 w-4 mr-1" />
+                Excel
+              </Button>
+              <Button onClick={() => exportToPDF(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm" className="bg-white">
+                <FileText className="h-4 w-4 mr-1" />
+                PDF
+              </Button>
+              <Button onClick={() => exportToDoc(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm" className="bg-white">
+                <FileText className="h-4 w-4 mr-1" />
+                Doc
+              </Button>
+              <Button onClick={handleExport} variant="outline" size="sm" className="bg-white">
+                <Download className="h-4 w-4 mr-1" />
+                JSON
+              </Button>
+              <Button onClick={handleImport} variant="outline" size="sm" className="bg-white">
+                <Upload className="h-4 w-4 mr-1" />
+                Import
+              </Button>
+              <Button onClick={handleReset} variant="outline" size="sm" className="bg-white">
+                <RefreshCw className="h-4 w-4 mr-1" />
+                Reset
+              </Button>
+            </div>
           </div>
         </div>
 
         <Tabs defaultValue="dashboard" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 gap-2 bg-transparent p-0 h-auto mb-6">
-            <TabsTrigger value="dashboard" className="bg-white rounded-xl py-3 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Dashboard</TabsTrigger>
-            <TabsTrigger value="income" className="bg-white rounded-xl py-3 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Income</TabsTrigger>
-            <TabsTrigger value="expenses" className="bg-white rounded-xl py-3 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Expenses</TabsTrigger>
-            <TabsTrigger value="bills" className="bg-white rounded-xl py-3 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Bills</TabsTrigger>
-            <TabsTrigger value="savings" className="bg-white rounded-xl py-3 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Savings</TabsTrigger>
-            <TabsTrigger value="debt" className="bg-white rounded-xl py-3 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Debt</TabsTrigger>
-            <TabsTrigger value="insights" className="bg-white rounded-xl py-3 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Insights</TabsTrigger>
-            <TabsTrigger value="community" className="bg-white rounded-xl py-3 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Community</TabsTrigger>
+          <TabsList className="inline-flex w-auto gap-2 bg-transparent p-0 h-auto mb-6">
+            <TabsTrigger value="dashboard" className="bg-white rounded-lg px-6 py-2 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Dashboard</TabsTrigger>
+            <TabsTrigger value="income" className="bg-white rounded-lg px-6 py-2 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Income</TabsTrigger>
+            <TabsTrigger value="expenses" className="bg-white rounded-lg px-6 py-2 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Expenses</TabsTrigger>
+            <TabsTrigger value="bills" className="bg-white rounded-lg px-6 py-2 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Bills</TabsTrigger>
+            <TabsTrigger value="savings" className="bg-white rounded-lg px-6 py-2 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Savings</TabsTrigger>
+            <TabsTrigger value="debt" className="bg-white rounded-lg px-6 py-2 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Debt</TabsTrigger>
           </TabsList>
 
           {/* Dashboard Tab */}
@@ -325,67 +318,6 @@ export default function Dashboard() {
             />
           </TabsContent>
 
-          {/* Insights Tab */}
-          <TabsContent value="insights" className="space-y-6 mt-0">
-            <InsightsPanel
-              budgetData={currentMonthData}
-              month={selectedMonth}
-              year={selectedYear}
-            />
-
-            {/* Future: Add spending trends, predictions, and detailed analytics here */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <CashFlowChart
-                expensesPlanned={totalExpensesPlanned}
-                expensesActual={summary.totalExpenses}
-                billsPlanned={totalBillsPlanned}
-                billsActual={summary.totalBills}
-                savingsPlanned={totalSavingsPlanned}
-                savingsActual={summary.totalSavings}
-                debtPlanned={totalDebtPlanned}
-                debtActual={summary.totalDebt}
-              />
-              <AllocationChart
-                expenses={summary.totalExpenses}
-                bills={summary.totalBills}
-                savings={summary.totalSavings}
-                debt={summary.totalDebt}
-              />
-            </div>
-          </TabsContent>
-
-          {/* Community Tab */}
-          <TabsContent value="community" className="space-y-6 mt-0">
-            <div className="text-center py-16">
-              <h2 className="text-3xl font-bold mb-4">Community Features Coming Soon! 🧸</h2>
-              <p className="text-muted-foreground mb-8">
-                Share budgets with family, connect with accountability partners, and join the BudgetBear community.
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-                <div className="bg-white p-6 rounded-lg shadow-md">
-                  <div className="text-4xl mb-3">👥</div>
-                  <h3 className="font-semibold mb-2">Family Budgets</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Share and collaborate on budgets with family members
-                  </p>
-                </div>
-                <div className="bg-white p-6 rounded-lg shadow-md">
-                  <div className="text-4xl mb-3">🤝</div>
-                  <h3 className="font-semibold mb-2">Accountability Partners</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Connect with friends for financial motivation and support
-                  </p>
-                </div>
-                <div className="bg-white p-6 rounded-lg shadow-md">
-                  <div className="text-4xl mb-3">🏆</div>
-                  <h3 className="font-semibold mb-2">Community Challenges</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Join savings challenges and compete with other users
-                  </p>
-                </div>
-              </div>
-            </div>
-          </TabsContent>
         </Tabs>
       </div>
     </main>
