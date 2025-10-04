@@ -59,16 +59,16 @@ export function SavingsSection({ savings, onUpdate }: SavingsSectionProps) {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          <div className="grid grid-cols-12 gap-4 font-semibold text-sm text-muted-foreground uppercase">
+          <div className="grid grid-cols-12 gap-2 md:gap-4 font-semibold text-xs md:text-sm text-muted-foreground uppercase">
             <div className="col-span-4">Goal</div>
-            <div className="col-span-2 text-right">Planned</div>
+            <div className="col-span-2 text-right">Plan</div>
             <div className="col-span-2 text-right">Actual</div>
-            <div className="col-span-3 text-center">Progress</div>
+            <div className="col-span-3 text-center"><span class="hidden md:inline">Progress</span><span class="md:hidden">%</span></div>
             <div className="col-span-1"></div>
           </div>
 
           {savings.map((item) => (
-            <div key={item.id} className="grid grid-cols-12 gap-4 items-center">
+            <div key={item.id} className="grid grid-cols-12 gap-2 md:gap-4 items-center">
               <Input
                 className="col-span-4 bg-white"
                 value={item.name}
