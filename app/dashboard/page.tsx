@@ -235,34 +235,34 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Action Buttons - Scrollable on mobile */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 -mx-4 px-4 md:mx-0 md:px-0">
+          {/* Action Buttons - Stacked on mobile, horizontal on desktop */}
+          <div className="grid grid-cols-4 md:flex md:flex-row gap-2">
             <ShareBudgetDialog budgetData={currentMonthData} month={selectedMonth} year={selectedYear} />
-            <Button onClick={() => exportToExcel(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm" className="bg-white whitespace-nowrap">
+            <Button onClick={() => exportToExcel(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm" className="bg-white">
               <FileSpreadsheet className="h-4 w-4 md:mr-1" />
               <span className="hidden md:inline">Excel</span>
             </Button>
-            <Button onClick={() => exportToPDF(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm" className="bg-white whitespace-nowrap">
+            <Button onClick={() => exportToPDF(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm" className="bg-white">
               <FileText className="h-4 w-4 md:mr-1" />
               <span className="hidden md:inline">PDF</span>
             </Button>
-            <Button onClick={() => exportToDoc(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm" className="bg-white whitespace-nowrap">
+            <Button onClick={() => exportToDoc(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm" className="bg-white">
               <FileText className="h-4 w-4 md:mr-1" />
               <span className="hidden md:inline">Doc</span>
             </Button>
-            <Button onClick={handleExport} variant="outline" size="sm" className="bg-white whitespace-nowrap">
+            <Button onClick={handleExport} variant="outline" size="sm" className="bg-white">
               <Download className="h-4 w-4 md:mr-1" />
               <span className="hidden md:inline">JSON</span>
             </Button>
-            <Button onClick={handleImport} variant="outline" size="sm" className="bg-white whitespace-nowrap">
+            <Button onClick={handleImport} variant="outline" size="sm" className="bg-white">
               <Upload className="h-4 w-4 md:mr-1" />
               <span className="hidden md:inline">Import</span>
             </Button>
-            <Button onClick={handleReset} variant="outline" size="sm" className="bg-white whitespace-nowrap">
+            <Button onClick={handleReset} variant="outline" size="sm" className="bg-white">
               <RefreshCw className="h-4 w-4 md:mr-1" />
               <span className="hidden md:inline">Reset</span>
             </Button>
-            <Button onClick={handleSignOut} variant="outline" size="sm" className="bg-red-50 border-red-300 hover:bg-red-100 whitespace-nowrap">
+            <Button onClick={handleSignOut} variant="outline" size="sm" className="bg-red-50 border-red-300 hover:bg-red-100">
               <LogOut className="h-4 w-4 md:mr-1" />
               <span className="hidden md:inline">Sign Out</span>
             </Button>
