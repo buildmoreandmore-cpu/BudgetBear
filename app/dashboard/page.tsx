@@ -19,7 +19,6 @@ import { BillsSection } from '@/components/sections/bills-section';
 import { SavingsSection } from '@/components/sections/savings-section';
 import { DebtSection } from '@/components/sections/debt-section';
 import { MonthSelector } from '@/components/month-selector';
-import { InsightsPanel } from '@/components/ai/insights-panel';
 import { DollarSign, CreditCard, PiggyBank } from 'lucide-react';
 import { useAuth } from '@/components/auth/auth-provider';
 
@@ -216,13 +215,6 @@ export default function Dashboard() {
 
           {/* Dashboard Tab */}
           <TabsContent value="dashboard" className="space-y-6 mt-0">
-            {/* AI Insights Panel */}
-            <InsightsPanel
-              budgetData={currentMonthData}
-              month={selectedMonth}
-              year={selectedYear}
-            />
-
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <SummaryCard
