@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Download, Upload, RefreshCw, FileSpreadsheet, FileText, LogOut } from 'lucide-react';
 import { BudgetData, MonthlyBudget } from '@/types/budget';
 import { loadBudgetData, saveBudgetData, resetBudgetData, exportBudgetData, importBudgetData } from '@/lib/storage';
+import { loadBudgetFromDB, saveBudgetToDB, migrateLocalStorageToDB, getDefaultBudgetData } from '@/lib/db-storage';
 import { calculateBudgetSummary } from '@/lib/calculations';
 import { exportToExcel, exportToPDF, exportToDoc } from '@/lib/export';
 import { SummaryCard } from '@/components/dashboard/summary-card';
@@ -21,17 +22,23 @@ import { DebtSection } from '@/components/sections/debt-section';
 import { MonthSelector } from '@/components/month-selector';
 import { DollarSign, CreditCard, PiggyBank } from 'lucide-react';
 import { useAuth } from '@/components/auth/auth-provider';
+import { InsightsPanel } from '@/components/ai/insights-panel';
+import { ShareBudgetDialog } from '@/components/community/share-budget-dialog';
+import { PartnerCard } from '@/components/community/partner-card';
 
 export default function Dashboard() {
   const { user, loading: authLoading, signOut } = useAuth();
   const router = useRouter();
-  const [budgetData, setBudgetData] = useState<BudgetData>(loadBudgetData());
+  const [budgetData, setBudgetData] = useState<BudgetData>(getDefaultBudgetData());
   const [mounted, setMounted] = useState(false);
+  const [migrated, setMigrated] = useState(false);
 
   const currentDate = new Date();
   const currentMonthName = currentDate.toLocaleString('en-US', { month: 'long' }).toLowerCase();
   const [selectedMonth, setSelectedMonth] = useState(currentMonthName);
   const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear());
+  const [partnerships, setPartnerships] = useState([]);
+  const [receivedRequests, setReceivedRequests] = useState([]);
 
   useEffect(() => {
     setMounted(true);
@@ -43,11 +50,32 @@ export default function Dashboard() {
     }
   }, [user, authLoading, router]);
 
+  // Migrate localStorage data to database once on mount
   useEffect(() => {
-    if (mounted) {
-      saveBudgetData(budgetData);
+    if (mounted && user && !migrated) {
+      migrateLocalStorageToDB().then(() => setMigrated(true));
     }
-  }, [budgetData, mounted]);
+  }, [mounted, user, migrated]);
+
+  // Load budget from database when month/year changes
+  useEffect(() => {
+    if (mounted && user && migrated) {
+      loadBudgetFromDB(selectedYear, selectedMonth).then(data => {
+        if (data) {
+          setBudgetData(prev => ({
+            ...prev,
+            years: {
+              ...prev.years,
+              [selectedYear]: {
+                ...prev.years[selectedYear],
+                [selectedMonth]: data,
+              },
+            },
+          }));
+        }
+      });
+    }
+  }, [selectedMonth, selectedYear, mounted, user, migrated]);
 
   // Ensure the selected year exists
   if (!budgetData.years[selectedYear]) {
@@ -88,6 +116,10 @@ export default function Dashboard() {
         },
       },
     });
+    // Save to database
+    if (user) {
+      saveBudgetToDB(selectedYear, selectedMonth, monthData);
+    }
   };
 
   const handleExport = () => {
@@ -131,10 +163,29 @@ export default function Dashboard() {
     }
   };
 
+  const fetchPartnerData = async () => {
+    try {
+      const response = await fetch('/api/partners');
+      if (response.ok) {
+        const data = await response.json();
+        setPartnerships(data.partnerships || []);
+        setReceivedRequests(data.receivedRequests || []);
+      }
+    } catch (error) {
+      console.error('Error fetching partner data:', error);
+    }
+  };
+
   const handleSignOut = async () => {
     await signOut();
     router.push('/');
   };
+
+  useEffect(() => {
+    if (mounted && user) {
+      fetchPartnerData();
+    }
+  }, [mounted, user]);
 
   if (!mounted || authLoading) {
     return null;
@@ -152,19 +203,20 @@ export default function Dashboard() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
       <div className="container mx-auto px-4 py-6 max-w-7xl">
-        {/* Header - Horizontal Layout */}
-        <div className="mb-6">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-4 mb-6">
+        {/* Header - Mobile Responsive */}
+        <div className="mb-4 md:mb-6">
+          {/* Logo and Month/Year on mobile, everything inline on desktop */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-3 mb-4">
             {/* Logo */}
             <div className="flex items-center gap-2">
-              <span className="text-4xl">🧸</span>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              <span className="text-3xl md:text-4xl">🧸</span>
+              <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                 BudgetBear
               </h1>
             </div>
 
-            {/* Month/Year Selectors */}
-            <div className="flex gap-2">
+            {/* Month/Year Selectors - Centered on mobile */}
+            <div className="flex gap-2 w-full md:w-auto justify-center md:justify-start">
               <MonthSelector
                 selectedMonth={selectedMonth}
                 selectedYear={selectedYear}
@@ -172,46 +224,54 @@ export default function Dashboard() {
                 onYearChange={setSelectedYear}
               />
             </div>
+          </div>
 
-            {/* Action Buttons */}
-            <div className="flex flex-wrap justify-center gap-2">
-              <Button onClick={() => exportToExcel(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm" className="bg-white">
-                <FileSpreadsheet className="h-4 w-4 mr-1" />
-                Excel
-              </Button>
-              <Button onClick={() => exportToPDF(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm" className="bg-white">
-                <FileText className="h-4 w-4 mr-1" />
-                PDF
-              </Button>
-              <Button onClick={() => exportToDoc(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm" className="bg-white">
-                <FileText className="h-4 w-4 mr-1" />
-                Doc
-              </Button>
-              <Button onClick={handleExport} variant="outline" size="sm" className="bg-white">
-                <Download className="h-4 w-4 mr-1" />
-                JSON
-              </Button>
-              <Button onClick={handleImport} variant="outline" size="sm" className="bg-white">
-                <Upload className="h-4 w-4 mr-1" />
-                Import
-              </Button>
-              <Button onClick={handleReset} variant="outline" size="sm" className="bg-white">
-                <RefreshCw className="h-4 w-4 mr-1" />
-                Reset
-              </Button>
-            </div>
+          {/* Action Buttons - Scrollable on mobile */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 -mx-4 px-4 md:mx-0 md:px-0">
+            <ShareBudgetDialog budgetData={currentMonthData} month={selectedMonth} year={selectedYear} />
+            <Button onClick={() => exportToExcel(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm" className="bg-white whitespace-nowrap">
+              <FileSpreadsheet className="h-4 w-4 md:mr-1" />
+              <span className="hidden md:inline">Excel</span>
+            </Button>
+            <Button onClick={() => exportToPDF(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm" className="bg-white whitespace-nowrap">
+              <FileText className="h-4 w-4 md:mr-1" />
+              <span className="hidden md:inline">PDF</span>
+            </Button>
+            <Button onClick={() => exportToDoc(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm" className="bg-white whitespace-nowrap">
+              <FileText className="h-4 w-4 md:mr-1" />
+              <span className="hidden md:inline">Doc</span>
+            </Button>
+            <Button onClick={handleExport} variant="outline" size="sm" className="bg-white whitespace-nowrap">
+              <Download className="h-4 w-4 md:mr-1" />
+              <span className="hidden md:inline">JSON</span>
+            </Button>
+            <Button onClick={handleImport} variant="outline" size="sm" className="bg-white whitespace-nowrap">
+              <Upload className="h-4 w-4 md:mr-1" />
+              <span className="hidden md:inline">Import</span>
+            </Button>
+            <Button onClick={handleReset} variant="outline" size="sm" className="bg-white whitespace-nowrap">
+              <RefreshCw className="h-4 w-4 md:mr-1" />
+              <span className="hidden md:inline">Reset</span>
+            </Button>
+            <Button onClick={handleSignOut} variant="outline" size="sm" className="bg-red-50 border-red-300 hover:bg-red-100 whitespace-nowrap">
+              <LogOut className="h-4 w-4 md:mr-1" />
+              <span className="hidden md:inline">Sign Out</span>
+            </Button>
           </div>
         </div>
 
-        <Tabs defaultValue="dashboard" className="space-y-6">
-          <TabsList className="inline-flex w-auto gap-2 bg-transparent p-0 h-auto mb-6">
-            <TabsTrigger value="dashboard" className="bg-white rounded-lg px-6 py-2 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Dashboard</TabsTrigger>
-            <TabsTrigger value="income" className="bg-white rounded-lg px-6 py-2 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Income</TabsTrigger>
-            <TabsTrigger value="expenses" className="bg-white rounded-lg px-6 py-2 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Expenses</TabsTrigger>
-            <TabsTrigger value="bills" className="bg-white rounded-lg px-6 py-2 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Bills</TabsTrigger>
-            <TabsTrigger value="savings" className="bg-white rounded-lg px-6 py-2 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Savings</TabsTrigger>
-            <TabsTrigger value="debt" className="bg-white rounded-lg px-6 py-2 data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Debt</TabsTrigger>
-          </TabsList>
+        <Tabs defaultValue="dashboard" className="space-y-4 md:space-y-6">
+          <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
+            <TabsList className="inline-flex w-auto gap-2 bg-transparent p-0 h-auto mb-4 md:mb-6">
+              <TabsTrigger value="dashboard" className="bg-white rounded-lg px-4 md:px-6 py-2 text-sm md:text-base whitespace-nowrap data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Dashboard</TabsTrigger>
+              <TabsTrigger value="income" className="bg-white rounded-lg px-4 md:px-6 py-2 text-sm md:text-base whitespace-nowrap data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Income</TabsTrigger>
+              <TabsTrigger value="expenses" className="bg-white rounded-lg px-4 md:px-6 py-2 text-sm md:text-base whitespace-nowrap data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Expenses</TabsTrigger>
+              <TabsTrigger value="bills" className="bg-white rounded-lg px-4 md:px-6 py-2 text-sm md:text-base whitespace-nowrap data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Bills</TabsTrigger>
+              <TabsTrigger value="savings" className="bg-white rounded-lg px-4 md:px-6 py-2 text-sm md:text-base whitespace-nowrap data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Savings</TabsTrigger>
+              <TabsTrigger value="debt" className="bg-white rounded-lg px-4 md:px-6 py-2 text-sm md:text-base whitespace-nowrap data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Debt</TabsTrigger>
+              <TabsTrigger value="community" className="bg-white rounded-lg px-4 md:px-6 py-2 text-sm md:text-base whitespace-nowrap data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Community</TabsTrigger>
+            </TabsList>
+          </div>
 
           {/* Dashboard Tab */}
           <TabsContent value="dashboard" className="space-y-6 mt-0">
@@ -242,6 +302,14 @@ export default function Dashboard() {
                 color="text-purple-600"
               />
             </div>
+
+            {/* AI Insights Panel */}
+            <InsightsPanel
+              budgetData={currentMonthData}
+              month={selectedMonth}
+              year={selectedYear}
+              allBudgetData={budgetData.years}
+            />
 
             {/* Amount Left Card */}
             <AmountLeftCard
@@ -308,6 +376,69 @@ export default function Dashboard() {
               debt={currentMonthData.debt}
               onUpdate={(debt) => updateMonthData({ ...currentMonthData, debt })}
             />
+          </TabsContent>
+
+          {/* Community Tab */}
+          <TabsContent value="community" className="mt-0">
+            <div className="space-y-6">
+              <div className="bg-white p-6 rounded-2xl border-2 border-purple-200 shadow-lg">
+                <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  🧸 BudgetBear Community
+                </h2>
+                <p className="text-gray-600 mb-4">
+                  Connect with family and accountability partners to achieve your financial goals together!
+                </p>
+              </div>
+
+              <PartnerCard
+                partnerships={partnerships}
+                receivedRequests={receivedRequests}
+                onRefresh={fetchPartnerData}
+              />
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="bg-white p-6 rounded-2xl border-2 border-green-200 shadow-lg">
+                  <h3 className="text-lg font-bold mb-3 flex items-center gap-2">
+                    <span>📊</span> Shared Budgets
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Collaborate on budgets with family members. Share your financial plans and work together toward common goals.
+                  </p>
+                  <ShareBudgetDialog budgetData={currentMonthData} month={selectedMonth} year={selectedYear} />
+                </div>
+
+                <div className="bg-white p-6 rounded-2xl border-2 border-yellow-200 shadow-lg">
+                  <h3 className="text-lg font-bold mb-3 flex items-center gap-2">
+                    <span>💡</span> Community Tips
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Learn from others! Share your budgeting wisdom and discover tips from the BudgetBear community.
+                  </p>
+                  <p className="text-xs text-gray-500 italic">Coming soon...</p>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-2xl border-2 border-blue-200">
+                <h3 className="text-lg font-bold mb-3">🎯 How Accountability Works</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                  <div className="bg-white p-4 rounded-lg">
+                    <div className="text-2xl mb-2">1️⃣</div>
+                    <h4 className="font-semibold mb-1">Find a Partner</h4>
+                    <p className="text-gray-600 text-xs">Send a request to someone you trust to be your accountability partner.</p>
+                  </div>
+                  <div className="bg-white p-4 rounded-lg">
+                    <div className="text-2xl mb-2">2️⃣</div>
+                    <h4 className="font-semibold mb-1">Set Goals Together</h4>
+                    <p className="text-gray-600 text-xs">Define your financial goals and check in regularly with your partner.</p>
+                  </div>
+                  <div className="bg-white p-4 rounded-lg">
+                    <div className="text-2xl mb-2">3️⃣</div>
+                    <h4 className="font-semibold mb-1">Achieve Success</h4>
+                    <p className="text-gray-600 text-xs">Stay motivated and accountable as you work toward your goals together!</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </TabsContent>
 
         </Tabs>

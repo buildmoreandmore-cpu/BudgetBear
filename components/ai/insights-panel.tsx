@@ -17,9 +17,10 @@ interface InsightsPanelProps {
   budgetData: MonthlyBudget;
   month: string;
   year: number;
+  allBudgetData?: Record<number, Record<string, MonthlyBudget>>;
 }
 
-export function InsightsPanel({ budgetData, month, year }: InsightsPanelProps) {
+export function InsightsPanel({ budgetData, month, year, allBudgetData }: InsightsPanelProps) {
   const [insights, setInsights] = useState<Insight[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,6 +39,7 @@ export function InsightsPanel({ budgetData, month, year }: InsightsPanelProps) {
           budgetData,
           month,
           year,
+          allBudgetData,
         }),
       });
 

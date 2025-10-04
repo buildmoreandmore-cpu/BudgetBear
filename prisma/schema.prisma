@@ -1,0 +1,145 @@
+// This is your Prisma schema file
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// User profiles (extends Supabase auth.users)
+model Profile {
+  id          String   @id @default(uuid())
+  userId      String   @unique // Maps to Supabase auth.users.id
+  displayName String?
+  avatarUrl   String?
+  bio         String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  budgets             Budget[]
+  sharedBudgets       SharedBudget[]
+  sentPartnerRequests PartnerRequest[] @relation("SentRequests")
+  receivedPartnerRequests PartnerRequest[] @relation("ReceivedRequests")
+  partnerships Partnership[] @relation("UserPartnerships")
+  partnerOf    Partnership[] @relation("PartnerOfUser")
+
+  @@map("profiles")
+}
+
+// User's personal budget data
+model Budget {
+  id         String   @id @default(uuid())
+  userId     String
+  user       Profile  @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  year       Int
+  month      String   // "january", "february", etc.
+  budgetData Json     // Stores income, expenses, bills, savings, debt arrays
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([userId, year, month])
+  @@map("budgets")
+}
+
+// Shared budgets for family members
+model SharedBudget {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  budgetData  Json     // Stores the budget data as JSON
+  ownerId     String
+  owner       Profile  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  sharedWith  String[] // Array of user IDs who have access
+  permissions Json     // { userId: "view" | "edit" }
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("shared_budgets")
+}
+
+// Accountability partner requests
+model PartnerRequest {
+  id         String   @id @default(uuid())
+  fromUserId String
+  toUserId   String
+  message    String?
+  status     String   // "pending", "accepted", "rejected"
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  fromUser Profile @relation("SentRequests", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUser   Profile @relation("ReceivedRequests", fields: [toUserId], references: [id], onDelete: Cascade)
+
+  @@unique([fromUserId, toUserId])
+  @@map("partner_requests")
+}
+
+// Active accountability partnerships
+model Partnership {
+  id          String   @id @default(uuid())
+  userId      String
+  partnerId   String
+  goalType    String   // "savings", "debt", "spending", "custom"
+  goalTarget  Float?
+  goalDetails Json?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user    Profile @relation("UserPartnerships", fields: [userId], references: [id], onDelete: Cascade)
+  partner Profile @relation("PartnerOfUser", fields: [partnerId], references: [id], onDelete: Cascade)
+
+  // Check-ins and updates
+  checkIns CheckIn[]
+
+  @@unique([userId, partnerId])
+  @@map("partnerships")
+}
+
+// Check-ins for accountability
+model CheckIn {
+  id            String   @id @default(uuid())
+  partnershipId String
+  partnership   Partnership @relation(fields: [partnershipId], references: [id], onDelete: Cascade)
+  userId        String
+  message       String
+  progress      Float?
+  createdAt     DateTime @default(now())
+
+  @@map("check_ins")
+}
+
+// Community tips and shared wisdom
+model CommunityTip {
+  id          String   @id @default(uuid())
+  authorId    String
+  category    String   // "savings", "budgeting", "debt", "income"
+  title       String
+  content     String
+  tags        String[]
+  upvotes     Int      @default(0)
+  upvotedBy   String[] // Array of user IDs
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("community_tips")
+}
+
+// Budget challenges
+model Challenge {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  type        String   // "savings", "no-spend", "debt-payoff", "custom"
+  startDate   DateTime
+  endDate     DateTime
+  goalAmount  Float?
+  participants String[] // Array of user IDs
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("challenges")
+}
