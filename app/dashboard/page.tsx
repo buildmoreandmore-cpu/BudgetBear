@@ -212,73 +212,100 @@ export default function Dashboard() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
       <div className="container mx-auto px-4 py-6 max-w-7xl">
-        {/* Header - Mobile Responsive */}
+        {/* Header - Simple mobile design */}
         <div className="mb-4 md:mb-6">
-          {/* Logo and Month/Year on mobile, everything inline on desktop */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-3 mb-4">
-            {/* Logo */}
-            <div className="flex items-center gap-2">
-              <span className="text-3xl md:text-4xl">🧸</span>
-              <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+          {/* Logo and Month/Year in one clean row */}
+          <div className="flex items-center justify-between gap-2 mb-3">
+            {/* Logo - smaller on mobile */}
+            <div className="flex items-center gap-1.5 md:gap-2">
+              <span className="text-2xl md:text-4xl">🧸</span>
+              <h1 className="text-xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                 BudgetBear
               </h1>
             </div>
 
-            {/* Month/Year Selectors - Centered on mobile */}
-            <div className="flex gap-2 w-full md:w-auto justify-center md:justify-start">
-              <MonthSelector
-                selectedMonth={selectedMonth}
-                selectedYear={selectedYear}
-                onMonthChange={setSelectedMonth}
-                onYearChange={setSelectedYear}
-              />
-            </div>
+            {/* Sign Out button - only on mobile */}
+            <Button onClick={handleSignOut} variant="outline" size="sm" className="md:hidden bg-red-50 border-red-300">
+              <LogOut className="h-4 w-4" />
+            </Button>
           </div>
 
-          {/* Action Buttons - Stacked on mobile, horizontal on desktop */}
-          <div className="grid grid-cols-4 md:flex md:flex-row gap-2">
+          {/* Month/Year Selectors - Full width on mobile */}
+          <div className="flex gap-2 mb-3">
+            <MonthSelector
+              selectedMonth={selectedMonth}
+              selectedYear={selectedYear}
+              onMonthChange={setSelectedMonth}
+              onYearChange={setSelectedYear}
+            />
+          </div>
+
+          {/* Action Buttons - Hidden on mobile, shown on desktop */}
+          <div className="hidden md:flex gap-2">
             <ShareBudgetDialog budgetData={currentMonthData} month={selectedMonth} year={selectedYear} />
             <Button onClick={() => exportToExcel(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm" className="bg-white">
-              <FileSpreadsheet className="h-4 w-4 md:mr-1" />
-              <span className="hidden md:inline">Excel</span>
+              <FileSpreadsheet className="h-4 w-4 mr-1" />
+              Excel
             </Button>
             <Button onClick={() => exportToPDF(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm" className="bg-white">
-              <FileText className="h-4 w-4 md:mr-1" />
-              <span className="hidden md:inline">PDF</span>
+              <FileText className="h-4 w-4 mr-1" />
+              PDF
             </Button>
             <Button onClick={() => exportToDoc(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm" className="bg-white">
-              <FileText className="h-4 w-4 md:mr-1" />
-              <span className="hidden md:inline">Doc</span>
+              <FileText className="h-4 w-4 mr-1" />
+              Doc
             </Button>
             <Button onClick={handleExport} variant="outline" size="sm" className="bg-white">
-              <Download className="h-4 w-4 md:mr-1" />
-              <span className="hidden md:inline">JSON</span>
+              <Download className="h-4 w-4 mr-1" />
+              JSON
             </Button>
             <Button onClick={handleImport} variant="outline" size="sm" className="bg-white">
-              <Upload className="h-4 w-4 md:mr-1" />
-              <span className="hidden md:inline">Import</span>
+              <Upload className="h-4 w-4 mr-1" />
+              Import
             </Button>
             <Button onClick={handleReset} variant="outline" size="sm" className="bg-white">
-              <RefreshCw className="h-4 w-4 md:mr-1" />
-              <span className="hidden md:inline">Reset</span>
+              <RefreshCw className="h-4 w-4 mr-1" />
+              Reset
             </Button>
             <Button onClick={handleSignOut} variant="outline" size="sm" className="bg-red-50 border-red-300 hover:bg-red-100">
-              <LogOut className="h-4 w-4 md:mr-1" />
-              <span className="hidden md:inline">Sign Out</span>
+              <LogOut className="h-4 w-4 mr-1" />
+              Sign Out
             </Button>
           </div>
         </div>
 
         <Tabs defaultValue="dashboard" className="space-y-4 md:space-y-6">
-          <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
-            <TabsList className="inline-flex w-auto gap-2 bg-transparent p-0 h-auto mb-4 md:mb-6">
-              <TabsTrigger value="dashboard" className="bg-white rounded-lg px-4 md:px-6 py-2 text-sm md:text-base whitespace-nowrap data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Dashboard</TabsTrigger>
-              <TabsTrigger value="income" className="bg-white rounded-lg px-4 md:px-6 py-2 text-sm md:text-base whitespace-nowrap data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Income</TabsTrigger>
-              <TabsTrigger value="expenses" className="bg-white rounded-lg px-4 md:px-6 py-2 text-sm md:text-base whitespace-nowrap data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Expenses</TabsTrigger>
-              <TabsTrigger value="bills" className="bg-white rounded-lg px-4 md:px-6 py-2 text-sm md:text-base whitespace-nowrap data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Bills</TabsTrigger>
-              <TabsTrigger value="savings" className="bg-white rounded-lg px-4 md:px-6 py-2 text-sm md:text-base whitespace-nowrap data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Savings</TabsTrigger>
-              <TabsTrigger value="debt" className="bg-white rounded-lg px-4 md:px-6 py-2 text-sm md:text-base whitespace-nowrap data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Debt</TabsTrigger>
-              <TabsTrigger value="community" className="bg-white rounded-lg px-4 md:px-6 py-2 text-sm md:text-base whitespace-nowrap data-[state=active]:bg-purple-100 data-[state=active]:text-purple-900">Community</TabsTrigger>
+          {/* Simplified tab bar - cleaner on mobile */}
+          <div className="border-b border-gray-200 mb-4">
+            <TabsList className="w-full flex justify-around bg-transparent p-0 h-auto">
+              <TabsTrigger value="dashboard" className="flex-1 py-3 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
+                <span className="md:hidden">📊</span>
+                <span className="hidden md:inline">Dashboard</span>
+              </TabsTrigger>
+              <TabsTrigger value="income" className="flex-1 py-3 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
+                <span className="md:hidden">💵</span>
+                <span className="hidden md:inline">Income</span>
+              </TabsTrigger>
+              <TabsTrigger value="expenses" className="flex-1 py-3 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
+                <span className="md:hidden">🛒</span>
+                <span className="hidden md:inline">Expenses</span>
+              </TabsTrigger>
+              <TabsTrigger value="bills" className="flex-1 py-3 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
+                <span className="md:hidden">📄</span>
+                <span className="hidden md:inline">Bills</span>
+              </TabsTrigger>
+              <TabsTrigger value="savings" className="flex-1 py-3 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
+                <span className="md:hidden">🐷</span>
+                <span className="hidden md:inline">Savings</span>
+              </TabsTrigger>
+              <TabsTrigger value="debt" className="flex-1 py-3 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
+                <span className="md:hidden">💳</span>
+                <span className="hidden md:inline">Debt</span>
+              </TabsTrigger>
+              <TabsTrigger value="community" className="flex-1 py-3 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
+                <span className="md:hidden">👥</span>
+                <span className="hidden md:inline">Community</span>
+              </TabsTrigger>
             </TabsList>
           </div>
 
