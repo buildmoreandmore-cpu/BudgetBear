@@ -53,14 +53,20 @@ export default function Dashboard() {
   // Migrate localStorage data to database once on mount
   useEffect(() => {
     if (mounted && user && !migrated) {
-      migrateLocalStorageToDB().then(() => setMigrated(true));
+      console.log('[BudgetBear] Starting migration for user:', user.id);
+      migrateLocalStorageToDB().then(() => {
+        console.log('[BudgetBear] Migration complete');
+        setMigrated(true);
+      });
     }
   }, [mounted, user, migrated]);
 
   // Load budget from database when month/year changes
   useEffect(() => {
     if (mounted && user && migrated) {
+      console.log('[BudgetBear] Loading budget from DB for user:', user.id, 'year:', selectedYear, 'month:', selectedMonth);
       loadBudgetFromDB(selectedYear, selectedMonth).then(data => {
+        console.log('[BudgetBear] Loaded budget data:', data);
         if (data) {
           setBudgetData(prev => ({
             ...prev,
@@ -106,6 +112,7 @@ export default function Dashboard() {
   const summary = calculateBudgetSummary(currentMonthData);
 
   const updateMonthData = (monthData: MonthlyBudget) => {
+    console.log('[BudgetBear] Saving budget to DB for user:', user?.id, 'year:', selectedYear, 'month:', selectedMonth);
     setBudgetData({
       ...budgetData,
       years: {
@@ -118,7 +125,9 @@ export default function Dashboard() {
     });
     // Save to database
     if (user) {
-      saveBudgetToDB(selectedYear, selectedMonth, monthData);
+      saveBudgetToDB(selectedYear, selectedMonth, monthData).then(success => {
+        console.log('[BudgetBear] Save result:', success);
+      });
     }
   };
 

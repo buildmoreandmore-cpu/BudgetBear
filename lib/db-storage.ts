@@ -55,10 +55,17 @@ export async function saveBudgetToDB(year: number, month: string, budgetData: Mo
   }
 }
 
-// Migrate localStorage data to database
+// Migrate localStorage data to database (one-time migration, then clear localStorage)
 export async function migrateLocalStorageToDB(): Promise<void> {
   try {
+    // Check if migration has already been done for this user
+    const migrationKey = 'budget-bear-migrated';
+    if (typeof window !== 'undefined' && localStorage.getItem(migrationKey)) {
+      return; // Already migrated
+    }
+
     const localData = loadLocalBudgetData();
+    let hasMigratedData = false;
 
     for (const yearKey of Object.keys(localData.years)) {
       const year = parseInt(yearKey);
@@ -74,7 +81,16 @@ export async function migrateLocalStorageToDB(): Promise<void> {
           monthData.debt?.length > 0
         )) {
           await saveBudgetToDB(year, month, monthData);
+          hasMigratedData = true;
         }
+      }
+    }
+
+    // Mark migration as complete and clear localStorage budget data
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(migrationKey, 'true');
+      if (hasMigratedData) {
+        localStorage.removeItem('budget-bear-data'); // Clear old data
       }
     }
   } catch (error) {
