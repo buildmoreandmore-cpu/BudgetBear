@@ -275,36 +275,29 @@ export default function Dashboard() {
         </div>
 
         <Tabs defaultValue="dashboard" className="space-y-4 md:space-y-6">
-          {/* Simplified tab bar - cleaner on mobile */}
+          {/* Simplified tab bar with text labels */}
           <div className="border-b border-gray-200 mb-4">
             <TabsList className="w-full flex justify-around bg-transparent p-0 h-auto">
-              <TabsTrigger value="dashboard" className="flex-1 py-3 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
-                <span className="md:hidden">📊</span>
-                <span className="hidden md:inline">Dashboard</span>
+              <TabsTrigger value="dashboard" className="flex-1 py-3 px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
+                Dashboard
               </TabsTrigger>
-              <TabsTrigger value="income" className="flex-1 py-3 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
-                <span className="md:hidden">💵</span>
-                <span className="hidden md:inline">Income</span>
+              <TabsTrigger value="income" className="flex-1 py-3 px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
+                Income
               </TabsTrigger>
-              <TabsTrigger value="expenses" className="flex-1 py-3 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
-                <span className="md:hidden">🛒</span>
-                <span className="hidden md:inline">Expenses</span>
+              <TabsTrigger value="expenses" className="flex-1 py-3 px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
+                Expenses
               </TabsTrigger>
-              <TabsTrigger value="bills" className="flex-1 py-3 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
-                <span className="md:hidden">📄</span>
-                <span className="hidden md:inline">Bills</span>
+              <TabsTrigger value="bills" className="flex-1 py-3 px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
+                Bills
               </TabsTrigger>
-              <TabsTrigger value="savings" className="flex-1 py-3 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
-                <span className="md:hidden">🐷</span>
-                <span className="hidden md:inline">Savings</span>
+              <TabsTrigger value="savings" className="flex-1 py-3 px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
+                Savings
               </TabsTrigger>
-              <TabsTrigger value="debt" className="flex-1 py-3 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
-                <span className="md:hidden">💳</span>
-                <span className="hidden md:inline">Debt</span>
+              <TabsTrigger value="debt" className="flex-1 py-3 px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
+                Debt
               </TabsTrigger>
-              <TabsTrigger value="community" className="flex-1 py-3 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
-                <span className="md:hidden">👥</span>
-                <span className="hidden md:inline">Community</span>
+              <TabsTrigger value="community" className="flex-1 py-3 px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
+                Community
               </TabsTrigger>
             </TabsList>
           </div>
