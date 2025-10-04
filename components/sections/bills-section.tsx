@@ -73,7 +73,7 @@ export function BillsSection({ bills, onUpdate }: BillsSectionProps) {
             <div className="col-span-4">Bill Name</div>
             <div className="col-span-2 text-right">Plan</div>
             <div className="col-span-2 text-right">Actual</div>
-            <div className="col-span-2 text-center"><span class="hidden md:inline">Progress</span><span class="md:hidden">%</span></div>
+            <div className="col-span-2 text-center"><span className="hidden md:inline">Progress</span><span className="md:hidden">%</span></div>
             <div className="col-span-1"></div>
           </div>
 

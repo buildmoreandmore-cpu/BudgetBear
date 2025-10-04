@@ -63,7 +63,7 @@ export function SavingsSection({ savings, onUpdate }: SavingsSectionProps) {
             <div className="col-span-4">Goal</div>
             <div className="col-span-2 text-right">Plan</div>
             <div className="col-span-2 text-right">Actual</div>
-            <div className="col-span-3 text-center"><span class="hidden md:inline">Progress</span><span class="md:hidden">%</span></div>
+            <div className="col-span-3 text-center"><span className="hidden md:inline">Progress</span><span className="md:hidden">%</span></div>
             <div className="col-span-1"></div>
           </div>
 
