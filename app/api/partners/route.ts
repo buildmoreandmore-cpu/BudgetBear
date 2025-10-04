@@ -16,14 +16,18 @@ export async function POST(request: NextRequest) {
     const { toUserEmail, message } = await request.json();
 
     // Look up user by email in Supabase Auth
+    console.log('[Partners API] Looking up user by email:', toUserEmail);
     const { data: users, error: lookupError } = await supabaseAdmin.auth.admin.listUsers();
 
     if (lookupError) {
+      console.error('[Partners API] Lookup error:', lookupError);
       return NextResponse.json(
-        { error: 'Unable to lookup user' },
+        { error: `Unable to lookup user: ${lookupError.message}` },
         { status: 500 }
       );
     }
+
+    console.log('[Partners API] Found', users?.users?.length || 0, 'total users');
 
     const targetUser = users.users.find(u => u.email === toUserEmail);
 

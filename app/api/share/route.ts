@@ -16,14 +16,18 @@ export async function POST(request: NextRequest) {
     const { name, description, budgetData, sharedWithEmail, permission } = await request.json();
 
     // Look up user by email
+    console.log('[Share API] Looking up user by email:', sharedWithEmail);
     const { data: users, error: lookupError } = await supabaseAdmin.auth.admin.listUsers();
 
     if (lookupError) {
+      console.error('[Share API] Lookup error:', lookupError);
       return NextResponse.json(
-        { error: 'Unable to lookup user' },
+        { error: `Unable to lookup user: ${lookupError.message}` },
         { status: 500 }
       );
     }
+
+    console.log('[Share API] Found', users?.users?.length || 0, 'total users');
 
     const targetUser = users.users.find(u => u.email === sharedWithEmail);
 
