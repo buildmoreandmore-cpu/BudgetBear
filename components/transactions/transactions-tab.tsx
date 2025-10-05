@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { StatementUploader } from './statement-uploader';
 import { TransactionList } from './transaction-list';
+import { TrendsCard } from './trends-card';
 import { Badge } from '@/components/ui/badge';
 import { TrendingUp, TrendingDown, DollarSign, AlertCircle, Filter } from 'lucide-react';
 
@@ -106,6 +107,9 @@ export function TransactionsTab({ month, year }: TransactionsTabProps) {
 
       {/* Upload Section */}
       <StatementUploader onUploadComplete={fetchTransactions} />
+
+      {/* Trends & Forecast */}
+      <TrendsCard category={filterCategory === 'all' ? undefined : filterCategory} />
 
       {/* Summary Cards */}
       {summary && (
