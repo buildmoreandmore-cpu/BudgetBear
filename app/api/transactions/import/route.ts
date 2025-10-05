@@ -16,6 +16,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    // Ensure user profile exists
+    await prisma.profile.upsert({
+      where: { userId: user.id },
+      update: {},
+      create: { userId: user.id },
+    });
+
     const formData = await request.formData();
     const file = formData.get('file') as File;
 
@@ -173,7 +180,11 @@ export async function POST(request: NextRequest) {
       transactionsImported: savedTransactions.length,
     });
   } catch (error: unknown) {
-    console.error('[Transaction Import] Error:', error);
+    console.error('[Transaction Import] Full error:', error);
+    if (error instanceof Error) {
+      console.error('[Transaction Import] Error message:', error.message);
+      console.error('[Transaction Import] Error stack:', error.stack);
+    }
     const errorMessage = error instanceof Error ? error.message : 'Failed to import transactions';
     return NextResponse.json(
       { error: errorMessage },
