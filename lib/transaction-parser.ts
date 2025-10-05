@@ -189,7 +189,7 @@ export async function parsePDF(pdfBuffer: Buffer): Promise<ParsedTransaction[]> 
     // Try to extract transactions from the text
     // This is a heuristic approach - different banks format PDFs differently
     const transactions: ParsedTransaction[] = [];
-    const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+    const lines = text.split('\n').map((line: string) => line.trim()).filter((line: string) => line.length > 0);
 
     // Common patterns for transaction lines:
     // MM/DD/YYYY Description Amount
