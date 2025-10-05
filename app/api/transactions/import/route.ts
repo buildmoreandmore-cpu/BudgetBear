@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createClient } from '@/lib/supabase/server';
-import { parseCSV, ParsedTransaction, isDuplicateTransaction } from '@/lib/transaction-parser';
+import { parseStatement, ParsedTransaction, isDuplicateTransaction } from '@/lib/transaction-parser';
 
 /**
  * Import bank statement transactions
@@ -24,21 +24,26 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate file type
-    const fileType = file.name.endsWith('.csv') ? 'csv' : 'unknown';
-    if (fileType === 'unknown') {
+    let fileType: 'csv' | 'pdf';
+    if (file.name.endsWith('.csv')) {
+      fileType = 'csv';
+    } else if (file.name.endsWith('.pdf')) {
+      fileType = 'pdf';
+    } else {
       return NextResponse.json(
-        { error: 'Unsupported file type. Please upload a CSV file.' },
+        { error: 'Unsupported file type. Please upload a CSV or PDF file.' },
         { status: 400 }
       );
     }
 
-    // Read file content
-    const content = await file.text();
+    // Read file content as buffer
+    const arrayBuffer = await file.arrayBuffer();
+    const fileBuffer = Buffer.from(arrayBuffer);
 
     // Parse transactions
     let parsedTransactions: ParsedTransaction[];
     try {
-      parsedTransactions = parseCSV(content);
+      parsedTransactions = await parseStatement(fileBuffer, fileType);
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to parse file';
       return NextResponse.json(

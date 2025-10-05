@@ -76,14 +76,14 @@ export function StatementUploader({ onUploadComplete }: StatementUploaderProps) 
           <CardTitle>Import Bank Statement</CardTitle>
         </div>
         <CardDescription>
-          Upload your bank statement CSV file to automatically categorize your transactions
+          Upload your bank statement (CSV or PDF) to automatically categorize your transactions
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <input
           ref={fileInputRef}
           type="file"
-          accept=".csv"
+          accept=".csv,.pdf"
           onChange={handleFileSelect}
           className="hidden"
         />
@@ -101,7 +101,7 @@ export function StatementUploader({ onUploadComplete }: StatementUploaderProps) 
           ) : (
             <>
               <FileText className="mr-2 h-4 w-4" />
-              Select CSV File
+              Select File
             </>
           )}
         </Button>
@@ -140,10 +140,11 @@ export function StatementUploader({ onUploadComplete }: StatementUploaderProps) 
         )}
 
         <div className="bg-white/80 rounded-lg p-4 text-sm">
-          <div className="font-semibold mb-2">Supported Format:</div>
+          <div className="font-semibold mb-2">Supported Formats:</div>
           <ul className="space-y-1 text-xs text-muted-foreground">
             <li>• CSV files from most banks (Chase, Bank of America, Wells Fargo, etc.)</li>
-            <li>• Must include columns for: Date, Description, Amount</li>
+            <li>• PDF bank statements with transaction details</li>
+            <li>• Must include: Date, Description, and Amount for each transaction</li>
             <li>• AI will automatically categorize as Income, Expense, Bill, etc.</li>
             <li>• Identifies Fixed, Flexible, and Discretionary spending</li>
             <li>• Duplicate transactions are automatically skipped</li>
