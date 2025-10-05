@@ -39,7 +39,7 @@ export default function BestPractices() {
         <Card className="mb-8 bg-gradient-to-br from-purple-100 to-pink-100 border-2 border-purple-200">
           <CardContent className="pt-6">
             <p className="text-lg text-gray-700 leading-relaxed">
-              Successful budgeting isn't just about tracking where your money goes—it's about understanding your spending patterns,
+              Successful budgeting isn&apos;t just about tracking where your money goes—it&apos;s about understanding your spending patterns,
               learning from your financial history, and setting achievable goals for your future. BudgetBear combines historical
               insights with forward-looking goal setting to help you build lasting financial wellness.
             </p>
@@ -68,7 +68,7 @@ export default function BestPractices() {
                 <ul className="list-disc list-inside space-y-2 text-gray-600 ml-4">
                   <li>Import your bank statements to see a complete picture of your spending</li>
                   <li>Review your transaction history monthly to spot trends</li>
-                  <li>Identify your "invisible expenses" - small recurring charges that add up</li>
+                  <li>Identify your &quot;invisible expenses&quot; - small recurring charges that add up</li>
                   <li>Compare actual spending vs. planned budget to find gaps</li>
                 </ul>
                 <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mt-4">
@@ -115,7 +115,7 @@ export default function BestPractices() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <p className="text-gray-700">
-                  <strong>Why it matters:</strong> You can't fix what you don't acknowledge. Historical data shows the truth.
+                  <strong>Why it matters:</strong> You can&apos;t fix what you don&apos;t acknowledge. Historical data shows the truth.
                 </p>
                 <ul className="list-disc list-inside space-y-2 text-gray-600 ml-4">
                   <li>Find categories where you consistently overspend</li>
@@ -157,7 +157,7 @@ export default function BestPractices() {
                   <li>Base your budget on actual spending, not wishful thinking</li>
                   <li>Use your average monthly spending as a starting point</li>
                   <li>Set reduction goals of 5-10% initially, not 50%</li>
-                  <li>Build in "buffer" amounts for unexpected expenses based on past surprises</li>
+                  <li>Build in &quot;buffer&quot; amounts for unexpected expenses based on past surprises</li>
                 </ul>
                 <div className="bg-red-50 border-l-4 border-red-500 p-4 mt-4">
                   <p className="text-sm text-red-900">
@@ -182,12 +182,12 @@ export default function BestPractices() {
                 <div className="space-y-3 mt-4">
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <p className="font-semibold text-gray-800 mb-2">❌ Vague Goal:</p>
-                    <p className="text-gray-600">"I want to save more money"</p>
+                    <p className="text-gray-600">&quot;I want to save more money&quot;</p>
                   </div>
                   <div className="bg-green-50 p-4 rounded-lg border-2 border-green-200">
                     <p className="font-semibold text-green-800 mb-2">✅ SMART Goal:</p>
                     <p className="text-green-700">
-                      "I will save $200 per month by reducing discretionary spending by 15% over the next 3 months,
+                      &quot;I will save $200 per month by reducing discretionary spending by 15% over the next 3 months,
                       building a $600 emergency fund by March."
                     </p>
                   </div>
@@ -211,7 +211,7 @@ export default function BestPractices() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <p className="text-gray-700">
-                  <strong>Why it matters:</strong> You're 65% more likely to achieve goals when you share them with someone.
+                  <strong>Why it matters:</strong> You&apos;re 65% more likely to achieve goals when you share them with someone.
                 </p>
                 <ul className="list-disc list-inside space-y-2 text-gray-600 ml-4">
                   <li>Partner with a friend or family member who also wants to improve their finances</li>

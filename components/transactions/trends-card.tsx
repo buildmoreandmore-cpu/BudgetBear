@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { TrendingUp, TrendingDown, Activity } from 'lucide-react';
 
 interface TrendsCardProps {
@@ -108,13 +108,6 @@ export function TrendsCard({ category, subcategory, spendingType }: TrendsCardPr
       spending: forecast.nextMonth,
     });
   }
-
-  // Spending type breakdown for pie chart
-  const breakdownData = [
-    { name: 'Fixed', value: spendingBreakdown.fixed, color: '#ef4444' },
-    { name: 'Flexible', value: spendingBreakdown.flexible, color: '#eab308' },
-    { name: 'Discretionary', value: spendingBreakdown.discretionary, color: '#22c55e' },
-  ].filter(item => item.value > 0);
 
   const formatCurrency = (value: number) => `$${value.toFixed(2)}`;
 

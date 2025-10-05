@@ -205,8 +205,9 @@ export async function POST(request: NextRequest) {
 
       // Check if it's a Prisma error
       if ('code' in error) {
-        console.error('[Transaction Import] Prisma error code:', (error as any).code);
-        console.error('[Transaction Import] Prisma meta:', (error as any).meta);
+        const prismaError = error as { code?: string; meta?: unknown };
+        console.error('[Transaction Import] Prisma error code:', prismaError.code);
+        console.error('[Transaction Import] Prisma meta:', prismaError.meta);
       }
     }
     const errorMessage = error instanceof Error ? error.message : 'Failed to import transactions';
