@@ -165,7 +165,7 @@ export default function InvitePage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-lg border border-purple-200">
-            <p className="text-sm text-muted-foreground mb-1">You've been invited by</p>
+            <p className="text-sm text-muted-foreground mb-1">You&apos;ve been invited by</p>
             <p className="font-semibold text-lg">{invitation.inviterName}</p>
             <p className="text-sm text-muted-foreground">{invitation.inviterEmail}</p>
           </div>

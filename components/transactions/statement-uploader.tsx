@@ -9,9 +9,17 @@ interface StatementUploaderProps {
   onUploadComplete: () => void;
 }
 
+interface ImportResult {
+  success: boolean;
+  importId: string;
+  totalParsed: number;
+  duplicatesSkipped: number;
+  transactionsImported: number;
+}
+
 export function StatementUploader({ onUploadComplete }: StatementUploaderProps) {
   const [uploading, setUploading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<ImportResult | null>(null);
   const [error, setError] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 

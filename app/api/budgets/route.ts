@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
 }
 
 // Get all budgets for a user (used for year/month listing)
-export async function PUT(request: NextRequest) {
+export async function PUT() {
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
