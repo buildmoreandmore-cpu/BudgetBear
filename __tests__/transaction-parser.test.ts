@@ -1,4 +1,4 @@
-import { parseCSV, normalizeMerchantName, isDuplicateTransaction, parsePDF, parseStatement } from '@/lib/transaction-parser';
+import { parseCSV, normalizeMerchantName, isDuplicateTransaction, parsePDF, parseStatement, convertPdfToCSV } from '@/lib/transaction-parser';
 
 describe('Transaction Parser', () => {
   describe('parseCSV', () => {
@@ -125,29 +125,69 @@ describe('Transaction Parser', () => {
     });
   });
 
-  describe('parsePDF', () => {
-    it('should parse a simple PDF with transaction data', async () => {
-      // Mock PDF content - simulating extracted text
+  describe('convertPdfToCSV', () => {
+    it('should convert PDF text to CSV format using Claude AI', async () => {
+      // Skip if no API key is set
+      if (!process.env.ANTHROPIC_API_KEY) {
+        console.log('Skipping convertPdfToCSV test - ANTHROPIC_API_KEY not set');
+        return;
+      }
+
       const mockPdfText = `
-01/15/2025 Amazon.com Purchase $50.00
-01/16/2025 Starbucks Coffee $5.50
-01/17/2025 Salary Deposit $2000.00
+Bank Statement - January 2025
+
+Transaction History:
+01/15/2025  Amazon.com Purchase           $50.00
+01/16/2025  Starbucks Coffee              $5.50
+01/17/2025  Salary Deposit             $2,000.00
+01/18/2025  Rent Payment                 $1,200.00
+
+Ending Balance: $2,844.50
       `.trim();
 
-      // Create a mock PDF buffer that will extract to this text
-      // Note: This is a simplified test - real PDF parsing would need actual PDF binary
-      const mockBuffer = Buffer.from('mock pdf data');
+      const csvResult = await convertPdfToCSV(mockPdfText);
 
-      // We'll test the parseStatement wrapper with CSV instead for now
-      // since PDF parsing requires actual PDF binary format
-      const result = await parseStatement(
-        Buffer.from('Date,Description,Amount\n01/15/2025,Amazon,50.00'),
-        'csv'
+      // Verify it returns CSV format
+      expect(csvResult).toContain('Date');
+      expect(csvResult).toContain('Description');
+      expect(csvResult).toContain('Amount');
+
+      // Verify it contains some transaction data
+      expect(csvResult).toContain('Amazon');
+      expect(csvResult).toContain('Starbucks');
+    }, 30000); // 30 second timeout for API call
+
+    it('should throw error if ANTHROPIC_API_KEY is not set', async () => {
+      const originalKey = process.env.ANTHROPIC_API_KEY;
+      delete process.env.ANTHROPIC_API_KEY;
+
+      const mockPdfText = 'Some bank statement text';
+
+      await expect(convertPdfToCSV(mockPdfText)).rejects.toThrow(
+        'ANTHROPIC_API_KEY environment variable is not set'
       );
 
-      expect(result).toHaveLength(1);
-      expect(result[0].description).toBe('Amazon');
+      // Restore original key
+      if (originalKey) {
+        process.env.ANTHROPIC_API_KEY = originalKey;
+      }
     });
+  });
+
+  describe('parsePDF', () => {
+    it('should parse PDF using AI conversion to CSV', async () => {
+      // Skip if no API key is set
+      if (!process.env.ANTHROPIC_API_KEY) {
+        console.log('Skipping parsePDF test - ANTHROPIC_API_KEY not set');
+        return;
+      }
+
+      // Note: This test would need a real PDF buffer in a real scenario
+      // For now, we're just testing the error handling
+      const invalidBuffer = Buffer.from('invalid pdf');
+
+      await expect(parsePDF(invalidBuffer)).rejects.toThrow();
+    }, 30000);
 
     it('should handle PDF parsing errors gracefully', async () => {
       const invalidBuffer = Buffer.from('invalid pdf');

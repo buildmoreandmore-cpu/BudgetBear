@@ -318,7 +318,7 @@ export default function Dashboard() {
                 Debt
               </TabsTrigger>
               <TabsTrigger value="transactions" className="flex-1 py-3 px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
-                Transactions
+                History
               </TabsTrigger>
               <TabsTrigger value="community" className="flex-1 py-3 px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
                 Community

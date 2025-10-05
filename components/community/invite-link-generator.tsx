@@ -137,7 +137,21 @@ export function InviteLinkGenerator() {
               </Button>
             </div>
             <p className="text-xs text-muted-foreground">
-              Share this link with someone to invite them to BudgetBear. They&apos;ll automatically become your partner when they sign up!
+              {type === 'partner' && (
+                <>
+                  🤝 <strong>Partner Up!</strong> Share this link to team up on your financial journey. They&apos;ll become your accountability partner and help keep you on track!
+                </>
+              )}
+              {type === 'budget' && (
+                <>
+                  📊 <strong>Budget Sharing!</strong> Share this link to give someone access to view your budget. Perfect for family members or financial advisors!
+                </>
+              )}
+              {type === 'both' && (
+                <>
+                  🌟 <strong>Full Access!</strong> Share this link to create a complete partnership - they&apos;ll be your accountability partner AND have access to your shared budget!
+                </>
+              )}
             </p>
           </div>
         )}

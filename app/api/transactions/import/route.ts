@@ -127,9 +127,27 @@ export async function POST(request: NextRequest) {
     // Save transactions to database
     const savedTransactions = await Promise.all(
       newTransactions.map((transaction, index) => {
+        // Fallback categorization if AI fails
+        let fallbackCategory: 'income' | 'expense' | 'bill' | 'savings' | 'debt' | 'transfer' = 'expense';
+        let fallbackSubcategory = 'Uncategorized';
+
+        // Use transaction type and description to make a better guess
+        if (transaction.transactionType === 'credit') {
+          const desc = transaction.description.toLowerCase();
+          if (desc.includes('deposit') || desc.includes('salary') || desc.includes('paycheck') ||
+              desc.includes('payment from') || desc.includes('zelle payment from') ||
+              desc.includes('venmo') || desc.includes('transfer from')) {
+            fallbackCategory = 'income';
+            fallbackSubcategory = 'Deposit';
+          } else if (desc.includes('refund') || desc.includes('return')) {
+            fallbackCategory = 'income';
+            fallbackSubcategory = 'Refund';
+          }
+        }
+
         const cat = categorizations[index] || {
-          category: 'expense',
-          subcategory: 'Uncategorized',
+          category: fallbackCategory,
+          subcategory: fallbackSubcategory,
           spendingType: 'flexible',
           confidence: 0,
           isRecurring: false,
@@ -184,6 +202,12 @@ export async function POST(request: NextRequest) {
     if (error instanceof Error) {
       console.error('[Transaction Import] Error message:', error.message);
       console.error('[Transaction Import] Error stack:', error.stack);
+
+      // Check if it's a Prisma error
+      if ('code' in error) {
+        console.error('[Transaction Import] Prisma error code:', (error as any).code);
+        console.error('[Transaction Import] Prisma meta:', (error as any).meta);
+      }
     }
     const errorMessage = error instanceof Error ? error.message : 'Failed to import transactions';
     return NextResponse.json(

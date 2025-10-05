@@ -25,6 +25,8 @@ model Profile {
   receivedPartnerRequests PartnerRequest[] @relation("ReceivedRequests")
   partnerships Partnership[] @relation("UserPartnerships")
   partnerOf    Partnership[] @relation("PartnerOfUser")
+  imports             StatementImport[] @relation("UserImports")
+  transactions        Transaction[] @relation("UserTransactions")
 
   @@map("profiles")
 }
@@ -167,6 +169,7 @@ model Invitation {
 model StatementImport {
   id           String        @id @default(uuid())
   userId       String
+  user         Profile       @relation("UserImports", fields: [userId], references: [userId], onDelete: Cascade)
   fileName     String
   fileType     String        // "csv", "pdf", "ofx"
   importDate   DateTime      @default(now())
@@ -184,6 +187,7 @@ model StatementImport {
 model Transaction {
   id                String   @id @default(uuid())
   userId            String
+  user              Profile  @relation("UserTransactions", fields: [userId], references: [userId], onDelete: Cascade)
   importId          String?
   import            StatementImport? @relation(fields: [importId], references: [id], onDelete: SetNull)
 

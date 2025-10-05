@@ -54,19 +54,19 @@ For each transaction, determine:
 Guidelines:
 - "Bills" are recurring fixed payments (utilities, rent, subscriptions, insurance, loans)
 - "Expenses" are variable purchases (groceries, shopping, dining)
-- "Income" includes salary, wages, refunds, cashback
+- "Income" includes salary, wages, refunds, cashback, Zelle/Venmo payments received
 - "Savings" are transfers to savings accounts or investments
 - "Debt" payments are loan/credit card payments
 - "Transfer" is money moved between own accounts
 
-Respond with a JSON array matching the input transaction order.
+IMPORTANT: Respond ONLY with a valid JSON array. Do not include any markdown formatting, code blocks, or explanatory text. Just the JSON array.
 
 Transactions to categorize:
 ${JSON.stringify(transactions, null, 2)}`;
 
     const message = await anthropic.messages.create({
       model: 'claude-3-5-sonnet-20241022',
-      max_tokens: 8000,
+      max_tokens: 16000,
       messages: [
         {
           role: 'user',
@@ -91,7 +91,19 @@ ${JSON.stringify(transactions, null, 2)}`;
       if (jsonMatch) {
         categorizations = JSON.parse(jsonMatch[1]);
       } else {
-        throw new Error('Could not extract JSON from Claude response');
+        // Try to find JSON array anywhere in the text
+        const arrayMatch = content.text.match(/\[[\s\S]*\]/);
+        if (arrayMatch) {
+          try {
+            categorizations = JSON.parse(arrayMatch[0]);
+          } catch {
+            console.error('[Categorization API] Could not parse JSON. Response:', content.text);
+            throw new Error('Could not extract JSON from Claude response');
+          }
+        } else {
+          console.error('[Categorization API] No JSON found in response:', content.text);
+          throw new Error('Could not extract JSON from Claude response');
+        }
       }
     }
 

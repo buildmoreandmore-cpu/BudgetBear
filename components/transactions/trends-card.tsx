@@ -208,57 +208,6 @@ export function TrendsCard({ category, subcategory, spendingType }: TrendsCardPr
         </CardContent>
       </Card>
 
-      {/* Spending Type Breakdown */}
-      {spendingBreakdown.total > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Spending Type Breakdown</CardTitle>
-            <CardDescription>
-              Distribution across Fixed, Flexible, and Discretionary spending
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Bar Chart */}
-              <div>
-                <ResponsiveContainer width="100%" height={200}>
-                  <BarChart data={breakdownData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip formatter={(value) => formatCurrency(value as number)} />
-                    <Bar dataKey="value" fill="#8b5cf6" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-
-              {/* Percentages */}
-              <div className="space-y-3">
-                {breakdownData.map(item => {
-                  const percentage = ((item.value / spendingBreakdown.total) * 100).toFixed(1);
-                  return (
-                    <div key={item.name} className="space-y-1">
-                      <div className="flex justify-between text-sm">
-                        <span className="font-medium">{item.name}</span>
-                        <span>{formatCurrency(item.value)} ({percentage}%)</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div
-                          className="h-2 rounded-full transition-all"
-                          style={{
-                            width: `${percentage}%`,
-                            backgroundColor: item.color,
-                          }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }

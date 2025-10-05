@@ -44,7 +44,7 @@ export default function Home() {
             Track income, expenses, and savings across multiple months and years.
             Get AI-powered insights to make better financial decisions.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
             <Button
               onClick={() => setShowSignIn(true)}
               size="lg"
@@ -59,6 +59,15 @@ export default function Home() {
               className="text-lg px-8 py-6 border-2 border-purple-300 hover:bg-purple-50"
             >
               Sign In
+            </Button>
+          </div>
+          <div className="text-center">
+            <Button
+              onClick={() => router.push('/best-practices')}
+              variant="link"
+              className="text-purple-600 hover:text-purple-700 underline"
+            >
+              📚 Learn Budgeting Best Practices →
             </Button>
           </div>
         </div>
