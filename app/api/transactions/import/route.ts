@@ -39,9 +39,10 @@ export async function POST(request: NextRequest) {
     let parsedTransactions: ParsedTransaction[];
     try {
       parsedTransactions = parseCSV(content);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to parse file';
       return NextResponse.json(
-        { error: error.message || 'Failed to parse file' },
+        { error: errorMessage },
         { status: 400 }
       );
     }
@@ -166,10 +167,11 @@ export async function POST(request: NextRequest) {
       duplicatesSkipped: parsedTransactions.length - newTransactions.length,
       transactionsImported: savedTransactions.length,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[Transaction Import] Error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Failed to import transactions';
     return NextResponse.json(
-      { error: error.message || 'Failed to import transactions' },
+      { error: errorMessage },
       { status: 500 }
     );
   }
@@ -179,7 +181,7 @@ export async function POST(request: NextRequest) {
  * Get import history
  * GET /api/transactions/import
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const supabase = await createClient();
     const { data: { user }, error: authError } = await supabase.auth.getUser();

@@ -39,7 +39,7 @@ export function InviteLinkGenerator() {
       }
 
       setInviteLink(data.invitation.link);
-    } catch (error) {
+    } catch {
       alert('Failed to generate invitation link');
     } finally {
       setGenerating(false);
@@ -137,7 +137,7 @@ export function InviteLinkGenerator() {
               </Button>
             </div>
             <p className="text-xs text-muted-foreground">
-              Share this link with someone to invite them to BudgetBear. They'll automatically become your partner when they sign up!
+              Share this link with someone to invite them to BudgetBear. They&apos;ll automatically become your partner when they sign up!
             </p>
           </div>
         )}

@@ -14,7 +14,7 @@ export interface ParsedTransaction {
  */
 export function normalizeMerchantName(description: string): string {
   // Remove common prefixes/suffixes
-  let cleaned = description
+  const cleaned = description
     .replace(/^(POS|ATM|ACH|DEBIT|CREDIT|ONLINE|RECURRING)\s+/i, '')
     .replace(/\*\d+.*$/, '') // Remove transaction IDs like *123456
     .replace(/#\d+.*$/, '')  // Remove reference numbers

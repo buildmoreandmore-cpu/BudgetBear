@@ -44,8 +44,9 @@ export function StatementUploader({ onUploadComplete }: StatementUploaderProps) 
       setTimeout(() => {
         onUploadComplete();
       }, 2000);
-    } catch (err: any) {
-      setError(err.message || 'Failed to upload file');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to upload file';
+      setError(errorMessage);
     } finally {
       setUploading(false);
       // Reset file input

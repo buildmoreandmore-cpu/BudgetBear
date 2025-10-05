@@ -15,8 +15,8 @@ interface TransactionsTabProps {
 }
 
 export function TransactionsTab({ month, year }: TransactionsTabProps) {
-  const [transactions, setTransactions] = useState<any[]>([]);
-  const [summary, setSummary] = useState<any>(null);
+  const [transactions, setTransactions] = useState<Record<string, unknown>[]>([]);
+  const [summary, setSummary] = useState<Record<string, unknown> | null>(null);
   const [loading, setLoading] = useState(true);
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [showUnreviewed, setShowUnreviewed] = useState(false);
@@ -47,9 +47,10 @@ export function TransactionsTab({ month, year }: TransactionsTabProps) {
 
   useEffect(() => {
     fetchTransactions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [month, year, filterCategory, showUnreviewed]);
 
-  const handleUpdateTransaction = async (transactionId: string, updates: any) => {
+  const handleUpdateTransaction = async (transactionId: string, updates: Record<string, unknown>) => {
     try {
       const response = await fetch('/api/transactions', {
         method: 'PATCH',

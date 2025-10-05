@@ -25,7 +25,7 @@ export default function InvitePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [accepting, setAccepting] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<unknown>(null);
 
   useEffect(() => {
     const checkAuthAndFetchInvitation = async () => {
@@ -45,7 +45,7 @@ export default function InvitePage() {
         }
 
         setInvitation(data.invitation);
-      } catch (err) {
+      } catch {
         setError('Failed to load invitation');
       } finally {
         setLoading(false);
@@ -85,7 +85,7 @@ export default function InvitePage() {
 
       // Success! Redirect to dashboard
       router.push('/dashboard');
-    } catch (err) {
+    } catch {
       setError('Failed to accept invitation');
       setAccepting(false);
     }

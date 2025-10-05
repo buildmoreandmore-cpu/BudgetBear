@@ -1,9 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle2, AlertCircle, Edit2, Save, X } from 'lucide-react';
@@ -26,12 +25,12 @@ interface Transaction {
 
 interface TransactionListProps {
   transactions: Transaction[];
-  onUpdate: (transactionId: string, updates: any) => Promise<void>;
+  onUpdate: (transactionId: string, updates: Record<string, unknown>) => Promise<void>;
 }
 
 export function TransactionList({ transactions, onUpdate }: TransactionListProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editValues, setEditValues] = useState<any>({});
+  const [editValues, setEditValues] = useState<Record<string, string>>({});
 
   const handleEdit = (transaction: Transaction) => {
     setEditingId(transaction.id);

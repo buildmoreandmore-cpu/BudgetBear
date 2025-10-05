@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     const onlyUnreviewed = searchParams.get('unreviewed') === 'true';
 
     // Build date filter
-    let dateFilter: any = {};
+    const dateFilter: Record<string, Date> = {};
     if (month && year) {
       const monthIndex = [
         'january', 'february', 'march', 'april', 'may', 'june',
