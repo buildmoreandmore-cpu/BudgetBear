@@ -1,5 +1,5 @@
 import { parse } from 'csv-parse/sync';
-import pdf from 'pdf-parse';
+import * as pdfParse from 'pdf-parse';
 
 export interface ParsedTransaction {
   date: Date;
@@ -181,6 +181,8 @@ export function isDuplicateTransaction(
  */
 export async function parsePDF(pdfBuffer: Buffer): Promise<ParsedTransaction[]> {
   try {
+    // @ts-expect-error - pdf-parse has unusual module structure
+    const pdf = pdfParse.default || pdfParse;
     const data = await pdf(pdfBuffer);
     const text = data.text;
 
