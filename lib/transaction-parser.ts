@@ -54,13 +54,13 @@ export function normalizeMerchantName(description: string): string {
  */
 export function parseCSV(csvContent: string): ParsedTransaction[] {
   try {
-    // Parse CSV
+    // Parse CSV - returns array of Record<string, string>
     const records = parse(csvContent, {
       columns: true,
       skip_empty_lines: true,
       trim: true,
       relax_column_count: true,
-    });
+    }) as Record<string, string>[];
 
     const transactions: ParsedTransaction[] = [];
 
@@ -152,8 +152,9 @@ export function isDuplicateTransaction(
   t2: ParsedTransaction,
   toleranceDays: number = 1
 ): boolean {
-  // Same amount
-  if (Math.abs(t1.amount - t2.amount) > 0.01) return false;
+  // Same amount (must be within half a cent to account for floating point precision)
+  const amountDiff = Math.abs(t1.amount - t2.amount);
+  if (amountDiff > 0.005) return false;
 
   // Same type
   if (t1.transactionType !== t2.transactionType) return false;
