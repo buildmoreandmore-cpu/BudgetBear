@@ -125,7 +125,7 @@ export default function BestPractices() {
                 </ul>
                 <div className="bg-purple-50 border-l-4 border-purple-500 p-4 mt-4">
                   <p className="text-sm text-purple-900">
-                    <strong>🧸 Bear Tip:</strong> Use the "Needs Review" counter to check transactions that might need recategorization.
+                    <strong>🧸 Bear Tip:</strong> Use the &quot;Needs Review&quot; counter to check transactions that might need recategorization.
                     This helps ensure your analysis is accurate.
                   </p>
                 </div>
@@ -161,7 +161,7 @@ export default function BestPractices() {
                 </ul>
                 <div className="bg-red-50 border-l-4 border-red-500 p-4 mt-4">
                   <p className="text-sm text-red-900">
-                    <strong>🧸 Bear Tip:</strong> Check the forecast in your spending trends—BudgetBear predicts next month's spending
+                    <strong>🧸 Bear Tip:</strong> Check the forecast in your spending trends—BudgetBear predicts next month&apos;s spending
                     based on your history to help you plan more accurately.
                   </p>
                 </div>
@@ -188,7 +188,7 @@ export default function BestPractices() {
                     <p className="font-semibold text-green-800 mb-2">✅ SMART Goal:</p>
                     <p className="text-green-700">
                       &quot;I will save $200 per month by reducing discretionary spending by 15% over the next 3 months,
-                      building a $600 emergency fund by March."
+                      building a $600 emergency fund by March.&quot;
                     </p>
                   </div>
                 </div>
@@ -217,12 +217,12 @@ export default function BestPractices() {
                   <li>Partner with a friend or family member who also wants to improve their finances</li>
                   <li>Share your monthly progress and challenges</li>
                   <li>Celebrate wins together and problem-solve setbacks</li>
-                  <li>Review each other's spending patterns for fresh perspectives</li>
+                  <li>Review each other&apos;s spending patterns for fresh perspectives</li>
                 </ul>
                 <div className="bg-purple-50 border-l-4 border-purple-500 p-4 mt-4">
                   <p className="text-sm text-purple-900">
                     <strong>🧸 Bear Tip:</strong> Use the Community tab to create an accountability partnership.
-                    Share budgets, set joint goals, and check in on each other's progress!
+                    Share budgets, set joint goals, and check in on each other&apos;s progress!
                   </p>
                 </div>
               </CardContent>
@@ -265,7 +265,7 @@ export default function BestPractices() {
               <ol className="list-decimal list-inside space-y-1 ml-4 text-white/90">
                 <li>Track daily spending against your budget</li>
                 <li>Review progress weekly with your partner</li>
-                <li>Adjust budget based on what's working (or not)</li>
+                <li>Adjust budget based on what&apos;s working (or not)</li>
               </ol>
             </div>
           </CardContent>

@@ -91,7 +91,7 @@ export function TrendsCard({ category, subcategory, spendingType }: TrendsCardPr
     );
   }
 
-  const { statistics, forecast, spendingBreakdown } = trends;
+  const { statistics, forecast } = trends;
 
   // Format data for chart
   const chartData = trends.monthlySummary.map(item => ({
