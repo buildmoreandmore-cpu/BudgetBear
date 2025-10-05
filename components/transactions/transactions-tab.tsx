@@ -14,6 +14,22 @@ interface TransactionsTabProps {
   year: number;
 }
 
+interface Transaction {
+  id: string;
+  date: string;
+  description: string;
+  amount: number;
+  transactionType: string;
+  category: string;
+  subcategory: string | null;
+  spendingType: string | null;
+  aiCategory: string | null;
+  aiConfidence: number | null;
+  isReviewed: boolean;
+  wasRecategorized: boolean;
+  merchantName: string | null;
+}
+
 interface Summary {
   totalIncome: number;
   totalExpenses: number;
@@ -25,7 +41,7 @@ interface Summary {
 }
 
 export function TransactionsTab({ month, year }: TransactionsTabProps) {
-  const [transactions, setTransactions] = useState<Record<string, unknown>[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [summary, setSummary] = useState<Summary | null>(null);
   const [loading, setLoading] = useState(true);
   const [filterCategory, setFilterCategory] = useState<string>('all');
