@@ -238,11 +238,18 @@ export default function Dashboard() {
           {/* Logo and Month/Year in one clean row */}
           <div className="flex items-center justify-between gap-2 mb-3">
             {/* Logo - smaller on mobile */}
-            <div className="flex items-center gap-1.5 md:gap-2">
-              <span className="text-2xl md:text-4xl">🧸</span>
-              <h1 className="text-xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                BudgetBear
-              </h1>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-1.5 md:gap-2">
+                <span className="text-2xl md:text-4xl">🧸</span>
+                <h1 className="text-xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  BudgetBear
+                </h1>
+              </div>
+              {user?.email && (
+                <p className="text-xs md:text-sm text-gray-500 ml-8 md:ml-12">
+                  {user.email}
+                </p>
+              )}
             </div>
 
             {/* Sign Out button - only on mobile */}
