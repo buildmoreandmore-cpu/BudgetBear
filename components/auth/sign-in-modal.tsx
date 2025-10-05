@@ -61,6 +61,9 @@ export function SignInModal({ open, onClose }: SignInModalProps) {
         provider: 'google',
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
+          queryParams: {
+            prompt: 'select_account', // Forces Google to show account chooser
+          },
         },
       });
       if (error) throw error;
