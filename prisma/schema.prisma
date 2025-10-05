@@ -162,3 +162,114 @@ model Invitation {
 
   @@map("invitations")
 }
+
+// Bank statement imports
+model StatementImport {
+  id           String        @id @default(uuid())
+  userId       String
+  fileName     String
+  fileType     String        // "csv", "pdf", "ofx"
+  importDate   DateTime      @default(now())
+  status       String        // "processing", "completed", "failed"
+  totalTransactions Int      @default(0)
+  processedTransactions Int  @default(0)
+  errorMessage String?
+
+  transactions Transaction[]
+
+  @@map("statement_imports")
+}
+
+// Individual transactions from bank statements
+model Transaction {
+  id                String   @id @default(uuid())
+  userId            String
+  importId          String?
+  import            StatementImport? @relation(fields: [importId], references: [id], onDelete: SetNull)
+
+  // Transaction details
+  date              DateTime
+  description       String
+  amount            Float
+  transactionType   String   // "debit", "credit"
+
+  // AI categorization
+  aiCategory        String?  // AI's initial categorization
+  aiConfidence      Float?   // Confidence score 0-100
+  aiSubcategory     String?  // More specific category
+
+  // User categorization
+  category          String   // "income", "expense", "bill", "savings", "debt", "transfer"
+  subcategory       String?  // User's specific subcategory
+  budgetItemName    String?  // Link to specific budget item
+
+  // Spending type
+  spendingType      String?  // "fixed", "flexible", "discretionary"
+
+  // Metadata
+  isRecurring       Boolean  @default(false)
+  recurringPattern  String?  // "monthly", "weekly", "biweekly"
+  merchantName      String?
+  notes             String?
+
+  // User review
+  isReviewed        Boolean  @default(false)
+  wasRecategorized  Boolean  @default(false)
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([userId, date])
+  @@index([category])
+  @@map("transactions")
+}
+
+// Spending trends and predictions
+model SpendingTrend {
+  id              String   @id @default(uuid())
+  userId          String
+  category        String
+  subcategory     String?
+
+  // Historical data
+  monthlyAverage  Float
+  monthlyMin      Float
+  monthlyMax      Float
+  last3Months     Float[]
+  last6Months     Float[]
+
+  // Predictions
+  nextMonthPrediction Float
+  confidenceLevel     Float   // 0-100
+  trend               String  // "increasing", "decreasing", "stable"
+
+  // Analysis period
+  analysisDate    DateTime @default(now())
+  dataPoints      Int      // Number of months analyzed
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([userId, category, subcategory])
+  @@map("spending_trends")
+}
+
+// Merchant categorization learning
+model MerchantMapping {
+  id            String   @id @default(uuid())
+  userId        String?  // Null = global mapping
+  merchantName  String
+  normalizedName String  // Cleaned merchant name
+  category      String
+  subcategory   String?
+  spendingType  String?
+  isUserDefined Boolean  @default(false)
+  useCount      Int      @default(1)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([userId, normalizedName])
+  @@index([normalizedName])
+  @@map("merchant_mappings")
+}

@@ -26,6 +26,7 @@ import { InsightsPanel } from '@/components/ai/insights-panel';
 import { ShareBudgetDialog } from '@/components/community/share-budget-dialog';
 import { PartnerCard } from '@/components/community/partner-card';
 import { InviteLinkGenerator } from '@/components/community/invite-link-generator';
+import { TransactionsTab } from '@/components/transactions/transactions-tab';
 
 export default function Dashboard() {
   const { user, loading: authLoading, signOut } = useAuth();
@@ -316,6 +317,9 @@ export default function Dashboard() {
               <TabsTrigger value="debt" className="flex-1 py-3 px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
                 Debt
               </TabsTrigger>
+              <TabsTrigger value="transactions" className="flex-1 py-3 px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
+                Transactions
+              </TabsTrigger>
               <TabsTrigger value="community" className="flex-1 py-3 px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
                 Community
               </TabsTrigger>
@@ -425,6 +429,11 @@ export default function Dashboard() {
               debt={currentMonthData.debt}
               onUpdate={(debt) => updateMonthData({ ...currentMonthData, debt })}
             />
+          </TabsContent>
+
+          {/* Transactions Tab */}
+          <TabsContent value="transactions" className="mt-0">
+            <TransactionsTab month={selectedMonth} year={selectedYear} />
           </TabsContent>
 
           {/* Community Tab */}

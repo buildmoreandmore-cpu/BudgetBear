@@ -1,0 +1,210 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { createClient } from '@/lib/supabase/server';
+import { parseCSV, ParsedTransaction, isDuplicateTransaction } from '@/lib/transaction-parser';
+
+/**
+ * Import bank statement transactions
+ * POST /api/transactions/import
+ */
+export async function POST(request: NextRequest) {
+  try {
+    const supabase = await createClient();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const formData = await request.formData();
+    const file = formData.get('file') as File;
+
+    if (!file) {
+      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+    }
+
+    // Validate file type
+    const fileType = file.name.endsWith('.csv') ? 'csv' : 'unknown';
+    if (fileType === 'unknown') {
+      return NextResponse.json(
+        { error: 'Unsupported file type. Please upload a CSV file.' },
+        { status: 400 }
+      );
+    }
+
+    // Read file content
+    const content = await file.text();
+
+    // Parse transactions
+    let parsedTransactions: ParsedTransaction[];
+    try {
+      parsedTransactions = parseCSV(content);
+    } catch (error: any) {
+      return NextResponse.json(
+        { error: error.message || 'Failed to parse file' },
+        { status: 400 }
+      );
+    }
+
+    if (parsedTransactions.length === 0) {
+      return NextResponse.json(
+        { error: 'No valid transactions found in file' },
+        { status: 400 }
+      );
+    }
+
+    // Create import record
+    const statementImport = await prisma.statementImport.create({
+      data: {
+        userId: user.id,
+        fileName: file.name,
+        fileType,
+        status: 'processing',
+        totalTransactions: parsedTransactions.length,
+        processedTransactions: 0,
+      },
+    });
+
+    // Check for duplicates against existing transactions
+    const existingTransactions = await prisma.transaction.findMany({
+      where: {
+        userId: user.id,
+        date: {
+          gte: new Date(Math.min(...parsedTransactions.map(t => t.date.getTime()))),
+          lte: new Date(Math.max(...parsedTransactions.map(t => t.date.getTime()))),
+        },
+      },
+    });
+
+    // Filter out duplicates
+    const newTransactions = parsedTransactions.filter(parsed => {
+      return !existingTransactions.some(existing =>
+        isDuplicateTransaction(
+          parsed,
+          {
+            date: new Date(existing.date),
+            description: existing.description,
+            amount: existing.amount,
+            transactionType: existing.transactionType as 'debit' | 'credit',
+          }
+        )
+      );
+    });
+
+    // Batch categorize transactions using AI
+    const categorizationResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/transactions/categorize`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        transactions: newTransactions.map(t => ({
+          description: t.description,
+          amount: t.amount,
+          merchantName: t.merchantName,
+          date: t.date.toISOString(),
+        })),
+      }),
+    });
+
+    let categorizations = [];
+    if (categorizationResponse.ok) {
+      const result = await categorizationResponse.json();
+      categorizations = result.categorizations || [];
+    }
+
+    // Save transactions to database
+    const savedTransactions = await Promise.all(
+      newTransactions.map((transaction, index) => {
+        const cat = categorizations[index] || {
+          category: 'expense',
+          subcategory: 'Uncategorized',
+          spendingType: 'flexible',
+          confidence: 0,
+          isRecurring: false,
+        };
+
+        return prisma.transaction.create({
+          data: {
+            userId: user.id,
+            importId: statementImport.id,
+            date: transaction.date,
+            description: transaction.description,
+            amount: transaction.amount,
+            transactionType: transaction.transactionType,
+            merchantName: transaction.merchantName,
+
+            // AI categorization
+            aiCategory: cat.category,
+            aiSubcategory: cat.subcategory,
+            aiConfidence: cat.confidence,
+
+            // Initial user categorization (same as AI)
+            category: cat.category,
+            subcategory: cat.subcategory,
+            spendingType: cat.spendingType,
+
+            // Recurring detection
+            isRecurring: cat.isRecurring,
+            recurringPattern: cat.recurringPattern || null,
+          },
+        });
+      })
+    );
+
+    // Update import status
+    await prisma.statementImport.update({
+      where: { id: statementImport.id },
+      data: {
+        status: 'completed',
+        processedTransactions: savedTransactions.length,
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+      importId: statementImport.id,
+      totalParsed: parsedTransactions.length,
+      duplicatesSkipped: parsedTransactions.length - newTransactions.length,
+      transactionsImported: savedTransactions.length,
+    });
+  } catch (error: any) {
+    console.error('[Transaction Import] Error:', error);
+    return NextResponse.json(
+      { error: error.message || 'Failed to import transactions' },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * Get import history
+ * GET /api/transactions/import
+ */
+export async function GET(request: NextRequest) {
+  try {
+    const supabase = await createClient();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const imports = await prisma.statementImport.findMany({
+      where: { userId: user.id },
+      orderBy: { importDate: 'desc' },
+      take: 20,
+      include: {
+        _count: {
+          select: { transactions: true },
+        },
+      },
+    });
+
+    return NextResponse.json({ success: true, imports });
+  } catch (error) {
+    console.error('[Transaction Import GET] Error:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch imports' },
+      { status: 500 }
+    );
+  }
+}
