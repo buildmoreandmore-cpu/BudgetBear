@@ -143,3 +143,22 @@ model Challenge {
 
   @@map("challenges")
 }
+
+// Invitation links for sharing and partnerships
+model Invitation {
+  id           String   @id @default(uuid())
+  token        String   @unique // Unique shareable token
+  inviterId    String   // User who created invitation
+  inviterEmail String   // For display purposes
+  inviterName  String?  // Display name of inviter
+  type         String   // "partner", "budget", "both"
+  budgetId     String?  // Optional: if sharing specific budget
+  message      String?  // Optional personal message
+  expiresAt    DateTime // Invitation expiration
+  maxUses      Int      @default(1) // How many people can use this link
+  usedCount    Int      @default(0)
+  usedBy       String[] @default([]) // Array of user IDs who used this
+  createdAt    DateTime @default(now())
+
+  @@map("invitations")
+}

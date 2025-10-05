@@ -143,7 +143,7 @@ export function ExpensesSection({ expenses, onUpdate }: ExpensesSectionProps) {
             </Button>
           </div>
 
-          <div className="grid grid-cols-12 gap-4 pt-4 border-t font-bold">
+          <div className="grid grid-cols-12 gap-2 md:gap-4 pt-4 border-t font-bold">
             <div className="col-span-4">TOTAL</div>
             <div className="col-span-2 text-right">{formatCurrency(totalPlanned)}</div>
             <div className="col-span-2 text-right">{formatCurrency(totalActual)}</div>

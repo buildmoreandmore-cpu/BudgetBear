@@ -25,6 +25,7 @@ import { useAuth } from '@/components/auth/auth-provider';
 import { InsightsPanel } from '@/components/ai/insights-panel';
 import { ShareBudgetDialog } from '@/components/community/share-budget-dialog';
 import { PartnerCard } from '@/components/community/partner-card';
+import { InviteLinkGenerator } from '@/components/community/invite-link-generator';
 
 export default function Dashboard() {
   const { user, loading: authLoading, signOut } = useAuth();
@@ -49,6 +50,25 @@ export default function Dashboard() {
       router.push('/');
     }
   }, [user, authLoading, router]);
+
+  // Check for pending invitation after login
+  useEffect(() => {
+    if (mounted && user) {
+      const pendingInvitation = localStorage.getItem('pending_invitation');
+      if (pendingInvitation) {
+        // Auto-accept the invitation
+        fetch('/api/invitations/accept', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: pendingInvitation }),
+        }).then(() => {
+          localStorage.removeItem('pending_invitation');
+        }).catch((err) => {
+          console.error('[BudgetBear] Failed to auto-accept invitation:', err);
+        });
+      }
+    }
+  }, [mounted, user]);
 
   // Migrate localStorage data to database once on mount
   useEffect(() => {
@@ -424,6 +444,8 @@ export default function Dashboard() {
                 receivedRequests={receivedRequests}
                 onRefresh={fetchPartnerData}
               />
+
+              <InviteLinkGenerator />
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="bg-white p-6 rounded-2xl border-2 border-green-200 shadow-lg">
