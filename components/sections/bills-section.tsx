@@ -167,8 +167,8 @@ export function BillsSection({ bills, onUpdate }: BillsSectionProps) {
           <div className="grid grid-cols-12 gap-3 md:gap-4 pt-4 border-t font-bold">
             <div className="col-span-1"></div>
             <div className="col-span-4">TOTAL</div>
-            <div className="col-span-2 text-right text-[10px] sm:text-xs">{formatCurrency(totalPlanned)}</div>
-            <div className="col-span-2 text-right text-[10px] sm:text-xs">{formatCurrency(totalActual)}</div>
+            <div className="col-span-2 text-right text-sm">{formatCurrency(totalPlanned)}</div>
+            <div className="col-span-2 text-right text-sm">{formatCurrency(totalActual)}</div>
             <div className="col-span-2"></div>
             <div className="col-span-1"></div>
           </div>

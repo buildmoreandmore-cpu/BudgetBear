@@ -285,8 +285,8 @@ export default function Dashboard() {
             />
           </div>
 
-          {/* Action Buttons - Hidden on mobile, shown on desktop */}
-          <div className="hidden md:flex gap-2">
+          {/* Action Buttons - Responsive layout */}
+          <div className="flex gap-2 flex-wrap">
             <ShareBudgetDialog budgetData={currentMonthData} month={selectedMonth} year={selectedYear} />
             <Button onClick={() => exportToExcel(currentMonthData, selectedMonth, selectedYear)} variant="outline" size="sm" className="bg-white">
               <FileSpreadsheet className="h-4 w-4 mr-1" />

@@ -67,7 +67,7 @@ export function ShareBudgetDialog({ budgetData, month, year }: ShareBudgetDialog
           Share
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md w-[95vw] sm:w-full max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Share Budget with Family</DialogTitle>
         </DialogHeader>
