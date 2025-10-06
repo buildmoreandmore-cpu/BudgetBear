@@ -5,12 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Users2, Eye, Edit, Calendar, Trash2 } from 'lucide-react';
 import { SharedBudgetViewDialog } from './shared-budget-view-dialog';
+import { MonthlyBudget } from '@/types/budget';
 
 interface SharedBudget {
   id: string;
   name: string;
   description?: string;
-  budgetData: any;
+  budgetData: MonthlyBudget;
   ownerId: string;
   permissions: Record<string, string>;
   createdAt: string;

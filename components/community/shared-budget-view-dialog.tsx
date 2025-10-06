@@ -1,10 +1,16 @@
 'use client';
 
-import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { MonthlyBudget } from '@/types/budget';
-import { FileText, Eye, Edit, Calendar } from 'lucide-react';
+import { Eye, Edit, Calendar } from 'lucide-react';
+
+interface BudgetItem {
+  name: string;
+  planned?: number;
+  actual?: number;
+  amount?: number;
+}
 
 interface SharedBudget {
   id: string;
@@ -30,8 +36,6 @@ export function SharedBudgetViewDialog({
   open,
   onOpenChange,
 }: SharedBudgetViewDialogProps) {
-  const [isEditing, setIsEditing] = useState(false);
-
   const canEdit = budget.permissions[currentUserId] === 'edit';
   const isOwner = budget.ownerId === currentUserId;
 
@@ -133,7 +137,7 @@ export function SharedBudgetViewDialog({
               <div className="bg-white p-4 rounded-lg border">
                 <h3 className="font-semibold mb-3 text-green-600">Income</h3>
                 <div className="space-y-2">
-                  {budgetData.income.map((item: any, index) => (
+                  {budgetData.income.map((item: BudgetItem, index: number) => (
                     <div key={index} className="flex justify-between items-center py-2 border-b last:border-b-0">
                       <span className="text-sm">{item.name}</span>
                       <span className="font-medium text-green-600">{formatCurrency(item.planned ?? item.actual ?? item.amount ?? 0)}</span>
@@ -152,7 +156,7 @@ export function SharedBudgetViewDialog({
               <div className="bg-white p-4 rounded-lg border">
                 <h3 className="font-semibold mb-3 text-orange-600">Expenses</h3>
                 <div className="space-y-2">
-                  {budgetData.expenses.map((item: any, index) => (
+                  {budgetData.expenses.map((item: BudgetItem, index: number) => (
                     <div key={index} className="flex justify-between items-center py-2 border-b last:border-b-0">
                       <span className="text-sm">{item.name}</span>
                       <span className="font-medium text-orange-600">{formatCurrency(item.planned ?? item.actual ?? item.amount ?? 0)}</span>
@@ -171,7 +175,7 @@ export function SharedBudgetViewDialog({
               <div className="bg-white p-4 rounded-lg border">
                 <h3 className="font-semibold mb-3 text-red-600">Bills</h3>
                 <div className="space-y-2">
-                  {budgetData.bills.map((item: any, index) => (
+                  {budgetData.bills.map((item: BudgetItem, index: number) => (
                     <div key={index} className="flex justify-between items-center py-2 border-b last:border-b-0">
                       <span className="text-sm">{item.name}</span>
                       <span className="font-medium text-red-600">{formatCurrency(item.planned ?? item.actual ?? item.amount ?? 0)}</span>
@@ -190,7 +194,7 @@ export function SharedBudgetViewDialog({
               <div className="bg-white p-4 rounded-lg border">
                 <h3 className="font-semibold mb-3 text-blue-600">Savings</h3>
                 <div className="space-y-2">
-                  {budgetData.savings.map((item: any, index) => (
+                  {budgetData.savings.map((item: BudgetItem, index: number) => (
                     <div key={index} className="flex justify-between items-center py-2 border-b last:border-b-0">
                       <span className="text-sm">{item.name}</span>
                       <span className="font-medium text-blue-600">{formatCurrency(item.planned ?? item.actual ?? item.amount ?? 0)}</span>
@@ -209,7 +213,7 @@ export function SharedBudgetViewDialog({
               <div className="bg-white p-4 rounded-lg border">
                 <h3 className="font-semibold mb-3 text-purple-600">Debt Payments</h3>
                 <div className="space-y-2">
-                  {budgetData.debt.map((item: any, index) => (
+                  {budgetData.debt.map((item: BudgetItem, index: number) => (
                     <div key={index} className="flex justify-between items-center py-2 border-b last:border-b-0">
                       <span className="text-sm">{item.name}</span>
                       <span className="font-medium text-purple-600">{formatCurrency(item.planned ?? item.actual ?? item.amount ?? 0)}</span>

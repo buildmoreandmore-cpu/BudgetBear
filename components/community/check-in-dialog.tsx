@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,13 +30,7 @@ export function CheckInDialog({ partnershipId, currentUserId, onCheckInCreated }
   const [checkIns, setCheckIns] = useState<CheckIn[]>([]);
   const [loadingCheckIns, setLoadingCheckIns] = useState(false);
 
-  useEffect(() => {
-    if (open) {
-      fetchCheckIns();
-    }
-  }, [open, partnershipId]);
-
-  const fetchCheckIns = async () => {
+  const fetchCheckIns = useCallback(async () => {
     setLoadingCheckIns(true);
     try {
       const response = await fetch(`/api/check-ins?partnershipId=${partnershipId}`);
@@ -49,7 +43,13 @@ export function CheckInDialog({ partnershipId, currentUserId, onCheckInCreated }
     } finally {
       setLoadingCheckIns(false);
     }
-  };
+  }, [partnershipId]);
+
+  useEffect(() => {
+    if (open) {
+      fetchCheckIns();
+    }
+  }, [open, fetchCheckIns]);
 
   const handleSubmit = async () => {
     if (!message.trim()) {
