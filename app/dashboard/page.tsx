@@ -26,6 +26,7 @@ import { InsightsPanel } from '@/components/ai/insights-panel';
 import { ShareBudgetDialog } from '@/components/community/share-budget-dialog';
 import { PartnerCard } from '@/components/community/partner-card';
 import { InviteLinkGenerator } from '@/components/community/invite-link-generator';
+import { SharedBudgetsViewer } from '@/components/community/shared-budgets-viewer';
 import { TransactionsTab } from '@/components/transactions/transactions-tab';
 
 export default function Dashboard() {
@@ -41,6 +42,8 @@ export default function Dashboard() {
   const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear());
   const [partnerships, setPartnerships] = useState([]);
   const [receivedRequests, setReceivedRequests] = useState([]);
+  const [ownedBudgets, setOwnedBudgets] = useState([]);
+  const [sharedBudgets, setSharedBudgets] = useState([]);
 
   useEffect(() => {
     setMounted(true);
@@ -206,6 +209,19 @@ export default function Dashboard() {
     }
   };
 
+  const fetchSharedBudgets = async () => {
+    try {
+      const response = await fetch('/api/share');
+      if (response.ok) {
+        const data = await response.json();
+        setOwnedBudgets(data.ownedBudgets || []);
+        setSharedBudgets(data.sharedBudgets || []);
+      }
+    } catch (error) {
+      console.error('Error fetching shared budgets:', error);
+    }
+  };
+
   const handleSignOut = async () => {
     await signOut();
     router.push('/');
@@ -214,6 +230,7 @@ export default function Dashboard() {
   useEffect(() => {
     if (mounted && user) {
       fetchPartnerData();
+      fetchSharedBudgets();
     }
   }, [mounted, user]);
 
@@ -304,30 +321,30 @@ export default function Dashboard() {
 
         <Tabs defaultValue="dashboard" className="space-y-4 md:space-y-6">
           {/* Simplified tab bar with text labels */}
-          <div className="border-b border-gray-200 mb-4">
-            <TabsList className="w-full flex justify-around bg-transparent p-0 h-auto">
-              <TabsTrigger value="dashboard" className="flex-1 py-3 px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
+          <div className="border-b border-gray-200 mb-4 overflow-x-auto">
+            <TabsList className="w-full flex md:justify-around bg-transparent p-0 h-auto min-w-max md:min-w-0">
+              <TabsTrigger value="dashboard" className="md:flex-1 py-3 px-2 md:px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none whitespace-nowrap">
                 Dashboard
               </TabsTrigger>
-              <TabsTrigger value="income" className="flex-1 py-3 px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
+              <TabsTrigger value="income" className="md:flex-1 py-3 px-2 md:px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none whitespace-nowrap">
                 Income
               </TabsTrigger>
-              <TabsTrigger value="expenses" className="flex-1 py-3 px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
+              <TabsTrigger value="expenses" className="md:flex-1 py-3 px-2 md:px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none whitespace-nowrap">
                 Expenses
               </TabsTrigger>
-              <TabsTrigger value="bills" className="flex-1 py-3 px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
+              <TabsTrigger value="bills" className="md:flex-1 py-3 px-2 md:px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none whitespace-nowrap">
                 Bills
               </TabsTrigger>
-              <TabsTrigger value="savings" className="flex-1 py-3 px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
+              <TabsTrigger value="savings" className="md:flex-1 py-3 px-2 md:px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none whitespace-nowrap">
                 Savings
               </TabsTrigger>
-              <TabsTrigger value="debt" className="flex-1 py-3 px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
+              <TabsTrigger value="debt" className="md:flex-1 py-3 px-2 md:px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none whitespace-nowrap">
                 Debt
               </TabsTrigger>
-              <TabsTrigger value="transactions" className="flex-1 py-3 px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
+              <TabsTrigger value="transactions" className="md:flex-1 py-3 px-2 md:px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none whitespace-nowrap">
                 History
               </TabsTrigger>
-              <TabsTrigger value="community" className="flex-1 py-3 px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none">
+              <TabsTrigger value="community" className="md:flex-1 py-3 px-2 md:px-1 text-xs md:text-base border-b-2 border-transparent data-[state=active]:border-purple-600 data-[state=active]:text-purple-900 rounded-none whitespace-nowrap">
                 Community
               </TabsTrigger>
             </TabsList>
@@ -458,15 +475,23 @@ export default function Dashboard() {
               <PartnerCard
                 partnerships={partnerships}
                 receivedRequests={receivedRequests}
+                currentUserId={user?.id || ''}
                 onRefresh={fetchPartnerData}
               />
 
               <InviteLinkGenerator />
 
+              <SharedBudgetsViewer
+                ownedBudgets={ownedBudgets}
+                sharedBudgets={sharedBudgets}
+                currentUserId={user?.id || ''}
+                onRefresh={fetchSharedBudgets}
+              />
+
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="bg-white p-6 rounded-2xl border-2 border-green-200 shadow-lg">
                   <h3 className="text-lg font-bold mb-3 flex items-center gap-2">
-                    <span>📊</span> Shared Budgets
+                    <span>📊</span> Share Your Budget
                   </h3>
                   <p className="text-sm text-gray-600 mb-4">
                     Collaborate on budgets with family members. Share your financial plans and work together toward common goals.

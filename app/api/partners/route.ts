@@ -198,3 +198,57 @@ export async function PUT(request: NextRequest) {
     );
   }
 }
+
+// Delete/remove partnership
+export async function DELETE(request: NextRequest) {
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const partnershipId = searchParams.get('partnershipId');
+
+    if (!partnershipId) {
+      return NextResponse.json(
+        { error: 'Partnership ID is required' },
+        { status: 400 }
+      );
+    }
+
+    // Verify user is part of this partnership
+    const partnership = await prisma.partnership.findUnique({
+      where: { id: partnershipId },
+    });
+
+    if (!partnership) {
+      return NextResponse.json(
+        { error: 'Partnership not found' },
+        { status: 404 }
+      );
+    }
+
+    if (partnership.userId !== user.id && partnership.partnerId !== user.id) {
+      return NextResponse.json(
+        { error: 'You are not part of this partnership' },
+        { status: 403 }
+      );
+    }
+
+    // Delete the partnership
+    await prisma.partnership.delete({
+      where: { id: partnershipId },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('[Partners API] Error deleting partnership:', error);
+    return NextResponse.json(
+      { error: 'Failed to delete partnership' },
+      { status: 500 }
+    );
+  }
+}

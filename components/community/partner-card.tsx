@@ -2,10 +2,11 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Users, CheckCircle2, Plus } from 'lucide-react';
+import { Users, CheckCircle2, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { CheckInDialog } from './check-in-dialog';
 
 interface Partnership {
   id: string;
@@ -25,10 +26,11 @@ interface PartnerRequest {
 interface PartnerCardProps {
   partnerships: Partnership[];
   receivedRequests: PartnerRequest[];
+  currentUserId: string;
   onRefresh: () => void;
 }
 
-export function PartnerCard({ partnerships, receivedRequests, onRefresh }: PartnerCardProps) {
+export function PartnerCard({ partnerships, receivedRequests, currentUserId, onRefresh }: PartnerCardProps) {
   const [showAddPartner, setShowAddPartner] = useState(false);
   const [partnerEmail, setPartnerEmail] = useState('');
   const [message, setMessage] = useState('');
@@ -88,6 +90,26 @@ export function PartnerCard({ partnerships, receivedRequests, onRefresh }: Partn
     } catch (error) {
       console.error('Error accepting request:', error);
       alert('Failed to accept request');
+    }
+  };
+
+  const handleDeletePartnership = async (partnershipId: string) => {
+    if (!confirm('Are you sure you want to remove this accountability partner?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/partners?partnershipId=${partnershipId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) throw new Error('Failed to delete partnership');
+
+      alert('Partnership removed successfully');
+      onRefresh();
+    } catch (error) {
+      console.error('Error deleting partnership:', error);
+      alert('Failed to delete partnership');
     }
   };
 
@@ -163,7 +185,7 @@ export function PartnerCard({ partnerships, receivedRequests, onRefresh }: Partn
             {partnerships.map((partnership) => (
               <div key={partnership.id} className="bg-green-50 p-3 rounded-lg border border-green-200">
                 <div className="flex items-start justify-between">
-                  <div className="flex items-start gap-2">
+                  <div className="flex items-start gap-2 flex-1">
                     <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
                     <div>
                       <p className="font-medium text-sm">Partner ID: {partnership.partnerId.slice(0, 8)}...</p>
@@ -173,9 +195,21 @@ export function PartnerCard({ partnerships, receivedRequests, onRefresh }: Partn
                       )}
                     </div>
                   </div>
-                  <Button size="sm" variant="outline">
-                    Check In
-                  </Button>
+                  <div className="flex gap-2">
+                    <CheckInDialog
+                      partnershipId={partnership.id}
+                      currentUserId={currentUserId}
+                      onCheckInCreated={onRefresh}
+                    />
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleDeletePartnership(partnership.id)}
+                      className="text-red-600 border-red-300 hover:bg-red-50"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               </div>
             ))}
