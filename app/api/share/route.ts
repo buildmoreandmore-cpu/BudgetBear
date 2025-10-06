@@ -72,8 +72,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ sharedBudget });
   } catch (error) {
     console.error('Error creating shared budget:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { error: 'Failed to create shared budget' },
+      { error: `Failed to create shared budget: ${errorMessage}` },
       { status: 500 }
     );
   }
@@ -108,8 +109,9 @@ export async function GET() {
     });
   } catch (error) {
     console.error('Error fetching shared budgets:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { error: 'Failed to fetch shared budgets' },
+      { error: `Failed to fetch shared budgets: ${errorMessage}` },
       { status: 500 }
     );
   }
